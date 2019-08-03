@@ -11,82 +11,18 @@
   export default class extends wepy.app {
     config = {
       pages: [
-        // tab-bar
-        'pages/home',
-        // 'pages/map',
-        // 'pages/collect',
-        // 'pages/qr',
-        // 'pages/borrow',
-        'pages/user'
+        'pages/user',
+        'pages/home'
       ],
-      // 'subPackages': [
-      //   {
-      //     'root': 'pages/main',
-      //     'pages': [
-      //       // 首页
-      //       'search',
-      //       'list',
-      //       'detail'
-      //     ]
-      //   },
-      //   {
-      //     'root': 'pages/book',
-      //     'pages': [
-      //       // 图书
-      //       'comment',
-      //       'comments',
-      //       'list',
-      //       'listV2',
-      //       'detail',
-      //       'unpage'
-      //     ]
-      //   },
-      //   {
-      //     'root': 'pages/library',
-      //     'pages': [
-      //       // 图书馆管理
-      //       'library',
-      //       'shareLibrary',
-      //       'shareLibrary523V2',
-      //       'searchLibrary',
-      //       'borrow',
-      //       'usercollect',
-      //       'members',
-      //       'borrows',
-      //       'book',
-      //       'book_edit',
-      //       'sorts',
-      //       'sorts_list',
-      //       'sort',
-      //       'create'
-      //     ]
-      //   },
-      //   {
-      //     'root': 'pages/borrow',
-      //     'pages': [
-      //       'subscribe',
-      //       'result'
-      //     ]
-      //   },
-      //   {
-      //     'root': 'pages/user',
-      //     'pages': [
-      //       // 我的
-      //       'register',
-      //       'registerV2',
-      //       'follower',
-      //       'booklist',
-      //       'myLibrary',
-      //       'borrow',
-      //       'borrows',
-      //       'return',
-      //       'cash',
-      //       'wallet',
-      //       'walletHistories',
-      //       'subscribe'
-      //     ]
-      //   }
-      // ],
+      'subPackages': [
+        {
+          'root': 'pages/user',
+          'pages': [
+            // 我的
+            'login'
+          ]
+        }
+      ],
       window: {
         navigationBarTitleText: '智慧e家',
         navigationBarTextStyle: 'white',
@@ -101,15 +37,15 @@
         backgroundColor: '#fff',
         borderStyle: 'black',
         list: [{
-          pagePath: 'pages/home',
-          selectedIconPath: './images/zhsq/tabbars/home.png',
-          iconPath: './images/zhsq/tabbars/home1.png',
-          text: '首页'
-        }, {
           pagePath: 'pages/user',
           selectedIconPath: './images/zhsq/tabbars/mine.png',
           iconPath: './images/zhsq/tabbars/mine1.png',
           text: '我的'
+        }, {
+          pagePath: 'pages/home',
+          selectedIconPath: './images/zhsq/tabbars/home.png',
+          iconPath: './images/zhsq/tabbars/home1.png',
+          text: '首页'
         }]
       },
       networkTimeout: {

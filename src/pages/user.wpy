@@ -1,5 +1,30 @@
 <template>
-  <view class="page-user">
+  <view class="_home">
+    <HeaderContainer></HeaderContainer>
+    <view class="status-container">
+      <view class="sign-status">
+        <view class="authed-user">小高</view>
+        <view class="authed-status">已授权</view>
+      </view>
+    </view>
+    <view class="bc_conter">
+      <view class="bc_title">
+        <view class="bc_icon flo_l text-center" wx:for="{{iconList}}" wx:key="index" @tap="goto({{item.link}}, {{item.type}})">
+          <image src="{{item.icon}}"  mode="aspectFit"></image>
+          <view class="font_26">{{item.title}}</view>
+        </view>
+        <view class="clearfloat"></view>
+      </view>
+      <view class="bc_recommend">
+        <view class="title font_32">
+          公告信息
+          <span class="flo_r font_26" @tap="goto('/pages/borrow', 'tab')">
+            查看更多
+            <image src="http://119.3.220.213/images/zhsq/icons/more-gray.png" mode="aspectFit" style="width: 22rpx;height: 22rpx;margin-left: -6rpx;"></image>
+          </span>
+        </view>
+      </view>
+    </view>
   </view>
 </template>
 
@@ -9,160 +34,165 @@
   import base from '../mixins/base'
   import user from '../mixins/user'
   import ShareMessage from '../mixins/ShareMessage'
-  import { service } from '../config.js'
+  // import { service } from '../config.js'
+  import Header from '../components/header'
 
   export default class pageUser extends wepy.page {
     mixins = [base, http, user, ShareMessage]
     config = {
-      navigationBarTitleText: '我的',
-      enablePullDownRefresh: true,
-      navigationBarBackgroundColor: '#005b9e'
+      navigationBarTitleText: '首页',
+      navigationBarBackgroundColor: '#005b9e',
+      backgroundColor: '#005b9e',
+      enablePullDownRefresh: false
+    }
+    components = {
+      HeaderContainer: Header
     }
     data = {
-      libraries: {},
-      user: {},
-      nickName: '加载中...',
-      message: false
-    }
-
-    computed = {
-      nickName() {
-        return (user && user.wechat && user.wechat.nickname) ? user.wechat.nickname : '未授权用户'
-      }
-    }
-
-    onShow() {
-      // 初始化页面数据
-      // this.initPageData()
-      // this.$parent.getTracker(this.$root.$name, this.config.navigationBarTitleText)
-    }
-    onShareAppMessage(res) {
-      return this.$parent.onShareAppMessage(this.config.navigationBarTitleText)
-    }
-
-    onLoad() {
-
-    }
-
-    onPullDownRefresh() {
-      this.initPageData()
-    }
-
-    // 初始化页面数据
-    initPageData() {
-      this.$get({url: `${service.user}/v3`}, {
-        success: ({code, data}) => {
-          this.user = data.user
-          this.libraries = data.libraries
-          this.libraries.forEach((item) => {
-            if (item.type == 'SHARE') {
-              item.url = '/pages/library/shareLibrary?id=' + item.id
-            } else {
-              item.url = '/pages/library/library?id=' + item.id
-            }
-          })
-          wx.setStorageSync('openid', data.user.wechat.openid)
-          wx.setStorageSync('is_new', data.user.is_news)
-          if (data.user.is_news) {
-            wepy.showTabBarRedDot({
-              index: 4
-            })
-            this.message = true
-          } else {
-            this.message = false
-            wepy.hideTabBarRedDot({
-              index: 4
-            })
-          }
+      list: {
+        image: 'http://119.3.220.213/images/zhsq/home/home_gelly.jpg',
+        url: '/pages/user'
+      },
+      iconList: [
+        {
+          icon: 'http://119.3.220.213/images/zhsq/icons/users.png',
+          title: '用户管理',
+          link: '/pages/user/management',
+          type: 'nav'
+        },
+        {
+          icon: 'http://119.3.220.213/images/zhsq/icons/prepare-report.png',
+          title: '房屋报修',
+          link: '/pages/house/maintenance',
+          type: 'nav'
+        },
+        {
+          icon: 'http://119.3.220.213/images/zhsq/icons/feedbacks.png',
+          title: '我的反馈',
+          link: '/pages/feedback/mine',
+          type: 'nav'
+        },
+        {
+          icon: 'http://119.3.220.213/images/zhsq/icons/suggestions.png',
+          title: '意见反馈',
+          link: '/pages/suggestion/add',
+          type: 'tab'
+        },
+        {
+          icon: 'http://119.3.220.213/images/zhsq/icons/settings.png',
+          title: '设置',
+          link: '/pages/setting/index',
+          type: 'tab'
         }
-      })
+      ]
     }
-
+    onShow() {
+      this.$parent.getTracker(this.$root.$name, this.config.navigationBarTitleText)
+    }
+    onLoad() {
+    }
     methods = {
-      goto(url) {
+      goto(url, type) {
+        if (type == 'tab') {
+          return wx.switchTab({url: url})
+        }
         wx.navigateTo({url: url})
+      },
+      formSubmit(e) {
+        this.formId.push(e.detail.formId)
+        console.log(this.formId)
       }
-    }
-
-    components = {
     }
   }
 </script>
 
 <style lang="less">
-  @import "../styles/custom/fn.less";
-  @import "../styles/custom/reset.less";
-  page{
-    background: #f9f9f9;
-  }
-  // 提示红点
-  .weui-badge {
-    display: inline-block;
-    padding: .15em .4em;
-    min-width: 8px;
-    border-radius: 18px;
-    background-color: #F43530;
-    color: #FFFFFF;
-    line-height: 1.2;
-    text-align: center;
-    font-size: 12px;
-    vertical-align: middle;
-  }
-  .weui-badge_dot {
-    padding: .4em;
-    min-width: 0;
-  }
-  .weui-cells {
-    position: inherit;
-    border-bottom: 1rpx solid #dedede;
-    /*box-shadow: 1rpx 1rpx 12rpx #dedede;*/
-  }
-  .page-user{
-    @userinfoHeight: 100rpx;
-    @userinfoSpace: 8rpx;
-
-    .userinfo{
-      padding: 20rpx 0;
-    }
-    .page__bd_spacing{
-      padding: 22rpx;
-    }
-
-    .userinfo-avatar {
-      float: left;
-      width: @userinfoHeight;
-      height: @userinfoHeight;
-      border-radius: 50%;
-    }
-
-    // space + space
-    .userinfo-info {
-      float: left;
-      line-height: 1;
-      padding: @userinfoSpace 0;
-      margin-left: 3 * @userinfoSpace;
-    }
-
-    // text + space + text
-    .userinfo-nickname {
-      color: @uiColorGreen;
-      font-size: (@userinfoHeight - 4 * @userinfoSpace) * (16 / 30);
-      margin-bottom: 2 * @userinfoSpace;
-    }
-    .userinfo-status {
-      color: #999;
-      font-size: (@userinfoHeight - 4 * @userinfoSpace) * (14 / 30);
-
-    }
-    .lead {
-      width: 16rpx;
-      height: 16rpx;
-      background: red;
-      margin-top: -24rpx;
-      border-radius: 50%;
+  @import "../styles/custom/qr.less";
+  ._home{
+    .bc_conter{
+      width: 100%;
+      min-height: 80vh;
+      background: #F5F5F5;
+      margin: auto;
+      box-shadow: 0rpx -8rpx 34rpx white;
       position: absolute;
-      right: 16rpx;
+    }
+    .bc_title{
+      width: 94%;
+      min-height: 180rpx;
+      background: white;
+      margin: 0rpx auto;
+      border-radius: 8rpx;
+    }
+    /* 列表标题 */
+    .list_title {
+      font-size: 13px;
+      color: #818181;
+      border: 1rpx solid #d3d3d3;
+      height: 40rpx;
+      padding: 0rpx 4rpx;
+      border-radius: 6rpx;
+      margin-bottom: -12rpx;
+      float: right;
+    }
+    .bc_icon{
+      width: 98/4%;
+      height: 180rpx;
+      border-left: 2rpx solid #f7f7f7;
+      border-bottom: 2rpx solid #f7f7f7;
+      image{
+        width: 100rpx;
+        height: 100rpx;
+        margin-top: 12rpx;
+      }
+    }
+    .bc_icon:first-child{
+      border: none;
+    }
+    .bc_recommend{
+      width: 88%;
+      min-height: 180rpx;
+      background: white;
+      margin: 32rpx auto;
+      border-radius: 8rpx;
+      padding: 12rpx 22rpx;
+      .title{
+        border-bottom: 4rpx solid #f7f7f7;
+      }
+    }
+    .recommend_item{
+      padding: 22rpx 0;
+      border-bottom: 4rpx solid #f7f7f7;
+      image{
+        width: 120rpx;
+        height: 120rpx;
+        margin-right: 12rpx;
+      }
+    }
+    .status-container {
+      position: absolute;
       top: 40rpx;
+      width: 100%;
+      .sign-status {
+        height: 200rpx;
+        width: 200rpx;
+        line-height: 200rpx;
+        text-align: center;
+        color: #f9f9f9;
+        border: 4rpx solid #f9f9f9;
+        border-radius: 50%;
+        margin: 80rpx auto;
+        .authed-user {
+          height: 120rpx;
+          line-height: 120rpx;
+          font-size: 1.2rem;
+        }
+        .authed-status {
+          height: 80rpx;
+          line-height: 80rpx;
+          font-size: .8rem;
+        }
+      }
     }
   }
 </style>

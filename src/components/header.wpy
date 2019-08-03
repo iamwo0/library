@@ -1,0 +1,50 @@
+<template>
+  <view class="header-container">
+    <view class="header-box"></view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import base from '../mixins/base.js'
+
+  export default class HeaderContainer extends wepy.component {
+    mixins = [base]
+    props = {
+      userInfo: {
+        type: Object,
+        default: []
+      },
+      authed: {
+        type: Boolean,
+        default: false
+      }
+    }
+
+    data = {
+      autoplay: true,
+      indicatorColor: 'rgba(255, 255, 255, 0.6)',
+      indicatorActiveColor: 'rgba(255, 255, 255, 1)'
+    }
+
+    computed = {
+    }
+
+    methods = {
+    }
+  }
+</script>
+
+<style type="less">
+  .header-container {
+      height: 480rpx;
+      width: 100%;
+      background: url('http://119.3.220.213/images/zhsq/home/home_gelly.jpg') no-repeat;
+      /* background: #1E2F99; */
+      background-size: cover;
+      -webkit-background-size: cover;
+      -o-background-size: cover;
+      background-position: center 0;
+      border-bottom-left-radius: 8rpx;
+      border-bottom-right-radius: 8rpx;
+  }
+</style>

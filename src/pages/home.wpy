@@ -1,7 +1,8 @@
 <template>
   <view class="_home">
-    <view class="user-container">
-      <view class="user_info">
+    <HeaderContainer></HeaderContainer>
+    <view class="status-container">
+      <view class="sign-status">
         <view class="authed-user">小高</view>
         <view class="authed-status">已授权</view>
       </view>
@@ -19,10 +20,9 @@
           公告信息
           <span class="flo_r font_26" @tap="goto('/pages/borrow', 'tab')">
             查看更多
-            <image src="http://119.3.220.213/images/zhsq/icons/more.png" mode="aspectFit" style="width: 22rpx;height: 22rpx;margin-left: -6rpx;"></image>
+            <image src="http://119.3.220.213/images/zhsq/icons/more-gray.png" mode="aspectFit" style="width: 22rpx;height: 22rpx;margin-left: -6rpx;"></image>
           </span>
         </view>
-        <template is="tem_recommend" data="{{ recommendList }}"></template>
       </view>
     </view>
   </view>
@@ -34,8 +34,8 @@
   import base from '../mixins/base'
   import user from '../mixins/user'
   import ShareMessage from '../mixins/ShareMessage'
-  import { service } from '../config.js'
-  import swiper from '../components/swiper'
+  // import { service } from '../config.js'
+  import Header from '../components/header'
 
   export default class pageQr extends wepy.page {
     mixins = [base, http, user, ShareMessage]
@@ -46,7 +46,7 @@
       enablePullDownRefresh: false
     }
     components = {
-      Swiper: swiper
+      HeaderContainer: Header
     }
     data = {
       list: {
@@ -84,8 +84,7 @@
           link: '/pages/setting/index',
           type: 'tab'
         }
-      ],
-      recommendList: []
+      ]
     }
     onShow() {
       this.$parent.getTracker(this.$root.$name, this.config.navigationBarTitleText)
@@ -170,38 +169,30 @@
         margin-right: 12rpx;
       }
     }
-    .user-container {
-      height: 240rpx;
+    .status-container {
+      position: absolute;
+      top: 40rpx;
       width: 100%;
-      padding: 80rpx 0px;
-      background: url('http://119.3.220.213/images/zhsq/home/home_gelly.jpg') no-repeat;
-      background-size: cover;
-      -webkit-background-size: cover;
-      -o-background-size: cover;
-      background-position: center 0;
-      border-bottom-left-radius: 8rpx;
-      border-bottom-right-radius: 8rpx;
-      .user_info {
-        background-color: black;
-        opacity: 0.5;
-        color: #fdfdfd;
-        vertical-align:middle;
-        // display:table-cell;
-        padding: 40rpx;
-        border-radius: 50%;
-        border: 4rpx solid #fdfdfd;
+      .sign-status {
+        height: 200rpx;
+        width: 200rpx;
+        line-height: 200rpx;
         text-align: center;
-        height: 120rpx;
-        width: 120rpx;
-        margin: 0rpx auto;
+        color: #f9f9f9;
+        border: 4rpx solid #f9f9f9;
+        border-radius: 50%;
+        margin: 80rpx auto;
         .authed-user {
-          font-size: 140%;
+          height: 120rpx;
+          line-height: 120rpx;
+          font-size: 1.2rem;
         }
         .authed-status {
-          font-size: 80%;
+          height: 80rpx;
+          line-height: 80rpx;
+          font-size: .8rem;
         }
       }
     }
-
   }
 </style>

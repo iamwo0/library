@@ -4,7 +4,7 @@
    indicator-color="{{indicatorColor}}"
           bindchange="changeIndex"
    indicator-active-color="{{indicatorActiveColor}}">
-    <block wx:for="{{list}}" wx:key="index">
+    <block wx:for="{{ list }}" wx:key="index">
       <swiper-item>
         <navigator wx:if="{{item.url}}" url="{{item.url}}">
           <image src="{{item.image}}" class="swiper-image" style="height:{{style_height}};"  mode="widthFix"/>
