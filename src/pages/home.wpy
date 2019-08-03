@@ -1,0 +1,207 @@
+<template>
+  <view class="_home">
+    <view class="user-container">
+      <view class="user_info">
+        <view class="authed-user">小高</view>
+        <view class="authed-status">已授权</view>
+      </view>
+    </view>
+    <view class="bc_conter">
+      <view class="bc_title">
+        <view class="bc_icon flo_l text-center" wx:for="{{iconList}}" wx:key="index" @tap="goto({{item.link}}, {{item.type}})">
+          <image src="{{item.icon}}"  mode="aspectFit"></image>
+          <view class="font_26">{{item.title}}</view>
+        </view>
+        <view class="clearfloat"></view>
+      </view>
+      <view class="bc_recommend">
+        <view class="title font_32">
+          公告信息
+          <span class="flo_r font_26" @tap="goto('/pages/borrow', 'tab')">
+            查看更多
+            <image src="http://119.3.220.213/images/zhsq/icons/more.png" mode="aspectFit" style="width: 22rpx;height: 22rpx;margin-left: -6rpx;"></image>
+          </span>
+        </view>
+        <template is="tem_recommend" data="{{ recommendList }}"></template>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import http from '../mixins/http'
+  import base from '../mixins/base'
+  import user from '../mixins/user'
+  import ShareMessage from '../mixins/ShareMessage'
+  import { service } from '../config.js'
+  import swiper from '../components/swiper'
+
+  export default class pageQr extends wepy.page {
+    mixins = [base, http, user, ShareMessage]
+    config = {
+      navigationBarTitleText: '首页',
+      navigationBarBackgroundColor: '#005b9e',
+      backgroundColor: '#005b9e',
+      enablePullDownRefresh: false
+    }
+    components = {
+      Swiper: swiper
+    }
+    data = {
+      list: {
+        image: 'http://119.3.220.213/images/zhsq/home/home_gelly.jpg',
+        url: '/pages/user'
+      },
+      iconList: [
+        {
+          icon: 'http://119.3.220.213/images/zhsq/icons/users.png',
+          title: '用户管理',
+          link: '/pages/user/management',
+          type: 'nav'
+        },
+        {
+          icon: 'http://119.3.220.213/images/zhsq/icons/prepare-report.png',
+          title: '房屋报修',
+          link: '/pages/house/maintenance',
+          type: 'nav'
+        },
+        {
+          icon: 'http://119.3.220.213/images/zhsq/icons/feedbacks.png',
+          title: '我的反馈',
+          link: '/pages/feedback/mine',
+          type: 'nav'
+        },
+        {
+          icon: 'http://119.3.220.213/images/zhsq/icons/suggestions.png',
+          title: '意见反馈',
+          link: '/pages/suggestion/add',
+          type: 'tab'
+        },
+        {
+          icon: 'http://119.3.220.213/images/zhsq/icons/settings.png',
+          title: '设置',
+          link: '/pages/setting/index',
+          type: 'tab'
+        }
+      ],
+      recommendList: []
+    }
+    onShow() {
+      this.$parent.getTracker(this.$root.$name, this.config.navigationBarTitleText)
+    }
+    onLoad() {
+    }
+    methods = {
+      goto(url, type) {
+        if (type == 'tab') {
+          return wx.switchTab({url: url})
+        }
+        wx.navigateTo({url: url})
+      },
+      formSubmit(e) {
+        this.formId.push(e.detail.formId)
+        console.log(this.formId)
+      }
+    }
+  }
+</script>
+
+<style lang="less">
+  @import "../styles/custom/qr.less";
+  ._home{
+    .bc_conter{
+      width: 100%;
+      min-height: 80vh;
+      background: #F5F5F5;
+      margin: auto;
+      box-shadow: 0rpx -8rpx 34rpx white;
+      position: absolute;
+    }
+    .bc_title{
+      width: 94%;
+      min-height: 180rpx;
+      background: white;
+      margin: 0rpx auto;
+      border-radius: 8rpx;
+    }
+    /* 列表标题 */
+    .list_title {
+      font-size: 13px;
+      color: #818181;
+      border: 1rpx solid #d3d3d3;
+      height: 40rpx;
+      padding: 0rpx 4rpx;
+      border-radius: 6rpx;
+      margin-bottom: -12rpx;
+      float: right;
+    }
+    .bc_icon{
+      width: 98/4%;
+      height: 180rpx;
+      border-left: 2rpx solid #f7f7f7;
+      border-bottom: 2rpx solid #f7f7f7;
+      image{
+        width: 100rpx;
+        height: 100rpx;
+        margin-top: 12rpx;
+      }
+    }
+    .bc_icon:first-child{
+      border: none;
+    }
+    .bc_recommend{
+      width: 88%;
+      min-height: 180rpx;
+      background: white;
+      margin: 32rpx auto;
+      border-radius: 8rpx;
+      padding: 12rpx 22rpx;
+      .title{
+        border-bottom: 4rpx solid #f7f7f7;
+      }
+    }
+    .recommend_item{
+      padding: 22rpx 0;
+      border-bottom: 4rpx solid #f7f7f7;
+      image{
+        width: 120rpx;
+        height: 120rpx;
+        margin-right: 12rpx;
+      }
+    }
+    .user-container {
+      height: 240rpx;
+      width: 100%;
+      padding: 80rpx 0px;
+      background: url('http://119.3.220.213/images/zhsq/home/home_gelly.jpg') no-repeat;
+      background-size: cover;
+      -webkit-background-size: cover;
+      -o-background-size: cover;
+      background-position: center 0;
+      border-bottom-left-radius: 8rpx;
+      border-bottom-right-radius: 8rpx;
+      .user_info {
+        background-color: black;
+        opacity: 0.5;
+        color: #fdfdfd;
+        vertical-align:middle;
+        // display:table-cell;
+        padding: 40rpx;
+        border-radius: 50%;
+        border: 4rpx solid #fdfdfd;
+        text-align: center;
+        height: 120rpx;
+        width: 120rpx;
+        margin: 0rpx auto;
+        .authed-user {
+          font-size: 140%;
+        }
+        .authed-status {
+          font-size: 80%;
+        }
+      }
+    }
+
+  }
+</style>
