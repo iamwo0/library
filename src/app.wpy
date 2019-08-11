@@ -4,22 +4,92 @@
 //  import http from './mixins/http.js'
   import {service} from './config.js'
 
-  var ga = require('./ga.js')
-  var GoogleAnalytics = ga.GoogleAnalytics
-  var HitBuilders = ga.HitBuilders
+  // var ga = require('./ga.js')
+  // var GoogleAnalytics = ga.GoogleAnalytics
+  // var HitBuilders = ga.HitBuilders
 
   export default class extends wepy.app {
     config = {
       pages: [
-        'pages/user',
-        'pages/home'
+        'pages/home',
+        'pages/user'
       ],
       'subPackages': [
         {
+          'root': 'pages/tempkey',
+          'pages': [
+            'list',
+            'show'
+          ]
+        },
+        {
+          'root': 'pages/door',
+          'pages': [
+            'record'
+          ]
+        },
+        {
+          'root': 'pages/notice',
+          'pages': [
+            'list'
+          ]
+        },
+        {
           'root': 'pages/user',
           'pages': [
-            // 我的
-            'login'
+            'login',
+            'register',
+            'identification',
+            'information',
+            'profile',
+            'management',
+            'show'
+          ]
+        },
+        {
+          'root': 'pages/password',
+          'pages': [
+            'edit',
+            'forget'
+          ]
+        },
+        {
+          'root': 'pages/account',
+          'pages': [
+            'list',
+            'add'
+          ]
+        },
+        {
+          'root': 'pages/house',
+          'pages': [
+            'maintenance'
+          ]
+        },
+        {
+          'root': 'pages/feedback',
+          'pages': [
+            'add',
+            'list'
+          ]
+        },
+        {
+          'root': 'pages/setting',
+          'pages': [
+            'index'
+          ]
+        },
+        {
+          'root': 'pages/member',
+          'pages': [
+            'list',
+            'add'
+          ]
+        },
+        {
+          'root': 'pages/profile',
+          'pages': [
+            'avatar'
           ]
         }
       ],
@@ -37,15 +107,15 @@
         backgroundColor: '#fff',
         borderStyle: 'black',
         list: [{
-          pagePath: 'pages/user',
-          selectedIconPath: './images/zhsq/tabbars/mine.png',
-          iconPath: './images/zhsq/tabbars/mine1.png',
-          text: '我的'
-        }, {
           pagePath: 'pages/home',
           selectedIconPath: './images/zhsq/tabbars/home.png',
           iconPath: './images/zhsq/tabbars/home1.png',
           text: '首页'
+        }, {
+          pagePath: 'pages/user',
+          selectedIconPath: './images/zhsq/tabbars/mine.png',
+          iconPath: './images/zhsq/tabbars/mine1.png',
+          text: '我的'
         }]
       },
       networkTimeout: {
@@ -285,16 +355,16 @@
 
     // Google analytics
     getTracker(name, text) {
-      if (!this.globalData.tracker) {
-        // 初始化GoogleAnalytics Tracker
-        this.globalData.tracker = GoogleAnalytics.getInstance(this)
-          .setAppName('智慧e家')
-          .setAppVersion('v0.4')
-          .newTracker('UA-109097480-1')
-      }
-      var t = this.globalData.tracker
-      t.setScreenName(text)
-      t.send(new HitBuilders.ScreenViewBuilder().build())
+      // if (!this.globalData.tracker) {
+      //   // 初始化GoogleAnalytics Tracker
+      //   this.globalData.tracker = GoogleAnalytics.getInstance(this)
+      //     .setAppName('智慧e家')
+      //     .setAppVersion('v0.4')
+      //     .newTracker('UA-109097480-1')
+      // }
+      // var t = this.globalData.tracker
+      // t.setScreenName(text)
+      // t.send(new HitBuilders.ScreenViewBuilder().build())
     }
 
     /* ========================= 更新缓存信息 ======================== */
@@ -321,5 +391,5 @@
 </script>
 <style lang="less">
 @import "./styles/weui/index.less";
-@import "./styles/custom/index.less";
+// @import "./styles/custom/index.less";
 </style>

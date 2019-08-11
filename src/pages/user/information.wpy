@@ -1,0 +1,251 @@
+<template>
+<view class="page" xmlns:wx="http://www.w3.org/1999/xhtml">
+    <view class="page__bd">
+        <view class="weui-toptips weui-toptips_warn" wx:if="{{showTopTips}}">错误提示</view>
+        <view class="weui-cells weui-cells_after-title">
+            <view class="weui-cell ">
+                <view class="weui-cell__hd">
+                    <view class="weui-label">姓名: </view>
+                </view>
+                <view class="weui-cell__bd">
+                    <input class="weui-input" placeholder="请输入姓名"/>
+                </view>
+            </view>
+            <view class="weui-cell ">
+                <view class="weui-cell__hd">
+                    <view class="weui-label">昵称: </view>
+                </view>
+                <view class="weui-cell__bd">
+                    <input class="weui-input" placeholder="请输入昵称"/>
+                </view>
+            </view>
+            <view class="weui-cell ">
+                <view class="weui-cell__hd">
+                    <view class="weui-label">身份证号: </view>
+                </view>
+                <view class="weui-cell__bd">
+                    <input class="weui-input" placeholder="请输入身份证号"/>
+                </view>
+            </view>
+            <view class="weui-cell ">
+                <view class="weui-cell__hd">
+                    <view class="weui-label">年龄(周岁): </view>
+                </view>
+                <view class="weui-cell__bd">
+                    <input class="weui-input" placeholder="请输入年龄"/>
+                </view>
+            </view>
+            <view class="weui-cell ">
+                <view class="weui-cell__hd">
+                    <view class="weui-label">登陆密码: </view>
+                </view>
+                <view class="weui-cell__bd">
+                    <input class="weui-input" placeholder="请输入登陆密码"/>
+                </view>
+            </view>
+            <view class="weui-cell ">
+                <view class="weui-cell__hd">
+                    <view class="weui-label">确认密码: </view>
+                </view>
+                <view class="weui-cell__bd">
+                    <input class="weui-input" placeholder="请确认登陆密码"/>
+                </view>
+            </view>
+            <view class="weui-cell ">
+                <view class="weui-cell__hd">
+                    <view class="weui-label">工作单位: </view>
+                </view>
+                <view class="weui-cell__bd">
+                    <input class="weui-input" placeholder="" />
+                </view>
+            </view>
+            <view class="weui-cell weui-cell_switch">
+                <view class="weui-cell__bd">性别</view>
+                <view class="weui-cell__ft">
+                    <span>男</span>
+                    <switch checked ></switch>
+                    <span>女</span>
+                </view>
+            </view>
+            <view class="weui-cell weui-cell_select">
+                <view class="weui-cell__hd weui-cell__hd_in-select-after">
+                    <view class="weui-label">所属小区: </view>
+                </view>
+                <view class="weui-cell__bd">
+                    <picker bindchange="bindestateChange" value="{{ estateIndex}}" range="{{ estates }}">
+                        <view class="weui-select weui-select_in-select-after">{{estates[estateIndex]}}</view>
+                    </picker>
+                </view>
+            </view>
+            <view class="weui-cell weui-cell_select">
+                <view class="weui-cell__hd weui-cell__hd_in-select-after">
+                    <view class="weui-label">居住楼栋: </view>
+                </view>
+                <view class="weui-cell__bd">
+                    <picker bindchange="bindCountryChange" value="{{ buildingIndex }}" range="{{ buildings }}">
+                        <view class="weui-select weui-select_in-select-after">{{ buildings[buildingIndex]}}</view>
+                    </picker>
+                </view>
+            </view>
+            <view class="weui-cell weui-cell_select">
+                <view class="weui-cell__hd weui-cell__hd_in-select-after">
+                    <view class="weui-label">居住楼层: </view>
+                </view>
+                <view class="weui-cell__bd">
+                    <picker bindchange="bindCountryChange" value="{{ floorIndex }}" range="{{ floors }}">
+                        <view class="weui-select weui-select_in-select-after">{{ floors[floorIndex]}}</view>
+                    </picker>
+                </view>
+            </view>        
+            <view class="weui-cell weui-cell_select">
+                <view class="weui-cell__hd weui-cell__hd_in-select-after">
+                    <view class="weui-label">房间号: </view>
+                </view>
+                <view class="weui-cell__bd">
+                    <picker bindchange="bindCountryChange" value="{{ roomIndex }}" range="{{ rooms }}">
+                        <view class="weui-select weui-select_in-select-after">{{ rooms[roomIndex]}}</view>
+                    </picker>
+                </view>
+            </view>
+            <view class="weui-cell">
+                <view class="weui-cell__bd">
+                    <view class="weui-uploader">
+                        <view class="weui-uploader__hd">
+                          <view class="weui-uploader__overview">
+                              <view class="weui-uploader__title">点击选择身份证正面照: </view>
+                          </view>
+                        </view>
+                        <view class="weui-uploader__bd">
+                            <view class="weui-uploader__input-box">
+                                <view class="weui-uploader__input" bindtap="chooseImage"></view>
+                            </view>
+                        </view>
+                    </view>
+                </view>
+            </view>
+            <view class="weui-cell">
+                <view class="weui-cell__bd">
+                    <view class="weui-uploader">
+                        <view class="weui-uploader__hd">
+                          <view class="weui-uploader__overview">
+                              <view class="weui-uploader__title">点击选择正脸照: </view>
+                          </view>
+                        </view>
+                        <view class="weui-uploader__bd">
+                            <view class="weui-uploader__input-box">
+                                <view class="weui-uploader__input" bindtap="chooseImage"></view>
+                            </view>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </view>
+        <view class="weui-btn-area">
+            <button class="weui-btn submit-btn" type="primary" bindtap="showTopTips" @tap="goto('login')">确定</button>
+        </view>
+    </view>
+</view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import http from '../../mixins/http'
+  import base from '../../mixins/base'
+  import user from '../../mixins/user'
+  import ShareMessage from '../../mixins/ShareMessage'
+  import { service } from '../../config.js'
+
+  export default class pageUserRegisterInformation extends wepy.page {
+    mixins = [base, http, user, ShareMessage]
+    config = {
+      navigationBarTitleText: '基本信息',
+      enablePullDownRefresh: true,
+      navigationBarBackgroundColor: '#005b9e'
+    }
+
+    components = {
+    }
+
+    data = {
+      user: {},
+      nickName: '加载中...',
+      message: false,
+      estates: ['恒大绿洲', '保利.金香槟', '金陵半岛'],
+      estateIndex: 0,
+      buildings: ['一栋', '二栋', '三栋', '四栋'],
+      buildingIndex: 2,
+      floors: ['1层', '2层', '3层', '4层', '5层', '6层', '7层', '8层', '9层', '10层', '11层', '12层'],
+      floorIndex: 8,
+      rooms: ['102', '202', '301', '401', '503', '801', '1002'],
+      roomIndex: 6
+    }
+
+    computed = {
+      nickName() {
+        return (user && user.wechat && user.wechat.nickname) ? user.wechat.nickname : '未授权用户'
+      }
+    }
+
+    onShow() {
+      // 初始化页面数据
+      // this.initPageData()
+      // this.$parent.getTracker(this.$root.$name, this.config.navigationBarTitleText)
+    }
+    onShareAppMessage(res) {
+      return this.$parent.onShareAppMessage(this.config.navigationBarTitleText)
+    }
+
+    onLoad() {
+
+    }
+
+    onPullDownRefresh() {
+      this.initPageData()
+    }
+
+    // 初始化页面数据
+    initPageData() {
+      this.$get({url: `${service.user}/v3`}, {
+        success: ({code, data}) => {
+          this.user = data.user
+          this.libraries = data.libraries
+          this.libraries.forEach((item) => {
+            if (item.type == 'SHARE') {
+              item.url = '/pages/library/shareLibrary?id=' + item.id
+            } else {
+              item.url = '/pages/library/library?id=' + item.id
+            }
+          })
+          wx.setStorageSync('openid', data.user.wechat.openid)
+          wx.setStorageSync('is_new', data.user.is_news)
+          if (data.user.is_news) {
+            wepy.showTabBarRedDot({
+              index: 4
+            })
+            this.message = true
+          } else {
+            this.message = false
+            wepy.hideTabBarRedDot({
+              index: 4
+            })
+          }
+        }
+      })
+    }
+
+    methods = {
+      goto(url) {
+        wx.navigateTo({url: url})
+      }
+    }
+
+    components = {
+    }
+  }
+</script>
+
+<style lang="less">
+    .submit-btn {
+        background: #1E2F99;
+    }
+</style>

@@ -1,6 +1,7 @@
-import wepy from 'wepy';
+import wepy from 'wepy'
 import { service } from '../config.js'
 
+// eslint-disable-next-line camelcase
 export default class upload_image extends wepy.mixin {
   data= {
     Image: '',
@@ -33,11 +34,11 @@ export default class upload_image extends wepy.mixin {
         console.log(that.list)
         that.$apply()
         if (that.index == that.BookImage.length) {
-          wx.hideToast();
+          wx.hideToast()
         }
       },
       fail: (res) => {
-        wx.hideToast();
+        wx.hideToast()
         wx.showModal({
           title: '错误提示',
           content: '上传图片失败',
@@ -66,15 +67,15 @@ export default class upload_image extends wepy.mixin {
           })
           that.ShowUpload = true
           that.BookImage = res.tempFilePaths
-          console.log( that.BookImage)
-          console.log( that.BookImage.length)
+          console.log(that.BookImage)
+          console.log(that.BookImage.length)
           that.$apply()
-          for(let i= 0; i< that.BookImage.length; i++) {
+          for (let i = 0; i < that.BookImage.length; i++) {
             that.uploadFiles(that.BookImage[i])
           }
         }
       })
-    },
+    }
     // preview(item) {
     //   let that = this
     //   wx.previewImage({

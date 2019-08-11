@@ -15,11 +15,11 @@
           <input name="input" type="password" placeholder="请输入密码" />
         </view>
         <view class="pwd-forget text-right">
-          <small>忘记密码 ?</small>
+          <small @tap="goto('/pages/password/forget')">忘记密码 ?</small>
         </view>
         <view class="section btn-area">
-          <button class="form-btn form-btn-danger" form-type="submit">登陆</button>
-          <button class="form-btn form-btn-primary" form-type="reset">注册</button>
+          <button class="form-btn form-btn-danger" @tap="goto('/pages/user')">登陆</button>
+          <button class="form-btn form-btn-primary" @tap="goto('register')">注册</button>
         </view>
       </form>
     </view>
@@ -38,7 +38,7 @@
   export default class pageUserLogin extends wepy.page {
     mixins = [base, http, user, ShareMessage]
     config = {
-      navigationBarTitleText: '我的',
+      navigationBarTitleText: '登陆',
       enablePullDownRefresh: true,
       navigationBarBackgroundColor: '#005b9e'
     }
@@ -69,8 +69,10 @@
       return this.$parent.onShareAppMessage(this.config.navigationBarTitleText)
     }
 
-    onLoad() {
-
+    async onLoad() {
+      // await wepy.login()
+      // this.userInfo = await wepy.getUserInfo()
+      // console.log('>>>>>>>>>>', this.userInfo)
     }
 
     onPullDownRefresh() {
@@ -119,8 +121,8 @@
 </script>
 
 <style lang="less">
-  @import "../../styles/custom/fn.less";
-  @import "../../styles/custom/reset.less";
+  // @import "../../styles/custom/fn.less";
+  // @import "../../styles/custom/reset.less";
   page{
     background: #f9f9f9;
   }

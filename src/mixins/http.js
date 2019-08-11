@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+/* eslint-disable standard/object-curly-even-spacing */
 import wepy from 'wepy'
 import { service } from '../config.js'
 
@@ -63,8 +65,8 @@ export default class httpMixin extends wepy.mixin {
     wx.showNavigationBarLoading()
     // 构造请求体
     const request = {
-      url: url + '?XDEBUG_SESSION_START=1&from_openid='+ wx.getStorageSync('from_openid') + '&formId=' + wx.getStorageSync('fromId') ,
-      method: ['GET', 'POST','PUT', 'DELETE'].indexOf(methods) > -1 ? methods : 'GET',
+      url: url + '?XDEBUG_SESSION_START=1&from_openid=' + wx.getStorageSync('from_openid') + '&formId=' + wx.getStorageSync('fromId'),
+      method: ['GET', 'POST', 'PUT', 'DELETE'].indexOf(methods) > -1 ? methods : 'GET',
       header: Object.assign({
         'Authorization': 'Bearer ' + wx.getStorageSync('token'),
         'X-Requested-With': 'XMLHttpRequest'
@@ -84,7 +86,7 @@ export default class httpMixin extends wepy.mixin {
         console.log('[SUCCESS]', statusCode, typeof data === 'object' ? data : data.toString().substring(0, 100))
 
         // 状态码正常 & 确认有数据
-        if (0 === +data.code && data.data) {
+        if (+data.code === 0 && data.data) {
           // 成功回调
           wx.removeStorageSync('fromId')
           return setTimeout(() => {
@@ -99,7 +101,7 @@ export default class httpMixin extends wepy.mixin {
             content: data.message,
             showCancel: false
           })
-        }else if (data.code == 2) {
+        } else if (data.code == 2) {
           // 删除过时token
           var pages = getCurrentPages()    // 获取加载的页面
           var currentPage = pages[pages.length - 1]    // 获取当前页面的对象
@@ -121,16 +123,16 @@ export default class httpMixin extends wepy.mixin {
               // 根据业务接口处理:业务登陆:异步
               this.$post({ url: service.login, data: {code: res.code} }, {
                 success: ({code, data}) => {
-                  if(data.token){
+                  if (data.token) {
                     wx.setStorageSync('token', data.token)
                   }
-                  var route = '/' + getCurrentPages()[0].__route__;
+                  var route = '/' + getCurrentPages()[0].__route__
 
-                  if (route == '/pages/user/register'){
+                  if (route == '/pages/user/register') {
                     return
                   }
 
-                  if (!data.token ) {
+                  if (!data.token) {
                     // wx.reLaunch({url: '/pages/user/register'})
                     wx.navigateTo({url: '/pages/user/register'})
                   } else {
@@ -143,14 +145,13 @@ export default class httpMixin extends wepy.mixin {
               console.log('wepy.login.fail:', res)
             }
           })
-
         } else {
           // 失败回调：其他情况
           return setTimeout(() => {
             if (this.isFunction(fail)) {
               fail({statusCode, ...data})
               this.$apply()
-            }else{
+            } else {
               wx.showModal({
                 title: '提示',
                 content: data.message,
@@ -159,7 +160,6 @@ export default class httpMixin extends wepy.mixin {
             }
           })
         }
-
       },
       fail: ({ statusCode, data }) => {
         // 控制台调试日志
@@ -172,7 +172,7 @@ export default class httpMixin extends wepy.mixin {
       },
       complete: (res) => {
         // 控制台调试日志
-        //console.log('[COMPLETE]', res)
+        // console.log('[COMPLETE]', res)
         // 隐藏加载提示
         wx.hideNavigationBarLoading()
         // 停止下拉状态
@@ -180,11 +180,10 @@ export default class httpMixin extends wepy.mixin {
         // 完成回调
         return (() => {
           let completeExist = this.isFunction(complete)
-           completeExist && complete(res)
+          completeExist && complete(res)
           this.$apply()
         })()
       }
     }))
   }
 }
-

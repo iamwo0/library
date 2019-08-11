@@ -1,0 +1,140 @@
+<template>
+  <view class="page page-feedback">
+    <view class="maintenance-form">
+      <div class="weui-cells weui-cells_form">
+        <view class="weui-cells weui-cells_after-title">
+            <view class="weui-cell">
+                <view class="weui-cell__bd">
+                    <textarea class="weui-textarea" placeholder="请留下您宝贵的意见和建议" style="height: 3.3em" />
+                    <view class="weui-textarea-counter">0/200</view>
+                </view>
+            </view>
+        </view>
+        <view class="weui-cell">
+            <view class="weui-cell__bd">
+                <view class="weui-uploader">
+                    <view class="weui-uploader__hd">
+                      <view class="weui-uploader__overview">
+                          <view class="weui-uploader__title">选择上传图片: </view>
+                      </view>
+                    </view>
+                    <view class="weui-uploader__bd">
+                        <view class="weui-uploader__input-box">
+                            <view class="weui-uploader__input" bindtap="chooseImage"></view>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </view>
+      </div>
+    </view>
+    <view class="page__bd page__bd_spacing">
+      <button class="weui-btn" type="primary" @tap="goto('/pages/feedback/list')">提 交</button>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import http from '../../mixins/http'
+  import base from '../../mixins/base'
+  import user from '../../mixins/user'
+  import ShareMessage from '../../mixins/ShareMessage'
+  import { service } from '../../config.js'
+
+  export default class pageFeedbackAdd extends wepy.page {
+    mixins = [base, http, user, ShareMessage]
+    config = {
+      navigationBarTitleText: '意见反馈',
+      enablePullDownRefresh: true,
+      navigationBarBackgroundColor: '#005b9e'
+    }
+
+    components = {
+    }
+
+    data = {
+      libraries: {},
+      user: {},
+      nickName: '加载中...',
+      message: false
+    }
+
+    computed = {
+      nickName() {
+        return (user && user.wechat && user.wechat.nickname) ? user.wechat.nickname : '未授权用户'
+      }
+    }
+
+    onShow() {
+      // 初始化页面数据
+      // this.initPageData()
+      // this.$parent.getTracker(this.$root.$name, this.config.navigationBarTitleText)
+    }
+    onShareAppMessage(res) {
+      return this.$parent.onShareAppMessage(this.config.navigationBarTitleText)
+    }
+
+    onLoad() {
+
+    }
+
+    onPullDownRefresh() {
+      this.initPageData()
+    }
+
+    // 初始化页面数据
+    initPageData() {
+      this.$get({url: `${service.user}/v3`}, {
+        success: ({code, data}) => {
+          this.user = data.user
+          this.libraries = data.libraries
+          this.libraries.forEach((item) => {
+            if (item.type == 'SHARE') {
+              item.url = '/pages/library/shareLibrary?id=' + item.id
+            } else {
+              item.url = '/pages/library/library?id=' + item.id
+            }
+          })
+          wx.setStorageSync('openid', data.user.wechat.openid)
+          wx.setStorageSync('is_new', data.user.is_news)
+          if (data.user.is_news) {
+            wepy.showTabBarRedDot({
+              index: 4
+            })
+            this.message = true
+          } else {
+            this.message = false
+            wepy.hideTabBarRedDot({
+              index: 4
+            })
+          }
+        }
+      })
+    }
+
+    methods = {
+      goto(url) {
+        wx.navigateTo({url: url})
+      }
+    }
+
+    components = {
+    }
+  }
+</script>
+
+<style lang="less">
+  // @import "../../styles/custom/fn.less";
+  // @import "../../styles/custom/reset.less";
+  page{
+    background: #f9f9f9;
+  }
+  .page-feedback{
+    @userinfoHeight: 100rpx;
+    @userinfoSpace: 8rpx;
+    .maintenance-form {
+      margin-top: 80rpx;
+    }
+  }
+</style>

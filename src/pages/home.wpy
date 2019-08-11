@@ -1,16 +1,10 @@
 <template>
   <view class="_home">
-    <HeaderContainer></HeaderContainer>
-    <view class="status-container">
-      <view class="sign-status">
-        <view class="authed-user">小高</view>
-        <view class="authed-status">已授权</view>
-      </view>
-    </view>
+    <CarsouelSwiper></CarsouelSwiper>
     <view class="bc_conter">
       <view class="bc_title">
         <view class="bc_icon flo_l text-center" wx:for="{{iconList}}" wx:key="index" @tap="goto({{item.link}}, {{item.type}})">
-          <image src="{{item.icon}}"  mode="aspectFit"></image>
+          <image src="{{item.icon}}"  mode="aspectFit"/>
           <view class="font_26">{{item.title}}</view>
         </view>
         <view class="clearfloat"></view>
@@ -18,9 +12,9 @@
       <view class="bc_recommend">
         <view class="title font_32">
           公告信息
-          <span class="flo_r font_26" @tap="goto('/pages/borrow', 'tab')">
+          <span class="flo_r font_26" @tap="goto('/pages/notice/list')">
             查看更多
-            <image src="http://119.3.220.213/images/zhsq/icons/more-gray.png" mode="aspectFit" style="width: 22rpx;height: 22rpx;margin-left: -6rpx;"></image>
+            <image src="http://119.3.220.213/images/zhsq/icons/more-gray.png" mode="aspectFit" style="width: 22rpx;height: 22rpx;margin-left: -6rpx;"/>
           </span>
         </view>
       </view>
@@ -35,7 +29,7 @@
   import user from '../mixins/user'
   import ShareMessage from '../mixins/ShareMessage'
   // import { service } from '../config.js'
-  import Header from '../components/header'
+  import Carsouel from '../components/carousel'
 
   export default class pageQr extends wepy.page {
     mixins = [base, http, user, ShareMessage]
@@ -46,7 +40,7 @@
       enablePullDownRefresh: false
     }
     components = {
-      HeaderContainer: Header
+      CarsouelSwiper: Carsouel
     }
     data = {
       list: {
@@ -55,34 +49,28 @@
       },
       iconList: [
         {
-          icon: 'http://119.3.220.213/images/zhsq/icons/users.png',
-          title: '用户管理',
-          link: '/pages/user/management',
+          icon: 'http://119.3.220.213/images/zhsq/icons/lock.png',
+          title: '临时密码',
+          link: '/pages/tempkey/list',
           type: 'nav'
         },
         {
-          icon: 'http://119.3.220.213/images/zhsq/icons/prepare-report.png',
-          title: '房屋报修',
+          icon: 'http://119.3.220.213/images/zhsq/icons/center.png',
+          title: '物管信息',
           link: '/pages/house/maintenance',
           type: 'nav'
         },
         {
-          icon: 'http://119.3.220.213/images/zhsq/icons/feedbacks.png',
-          title: '我的反馈',
+          icon: 'http://119.3.220.213/images/zhsq/icons/phone.png',
+          title: '联系物业',
           link: '/pages/feedback/mine',
           type: 'nav'
         },
         {
-          icon: 'http://119.3.220.213/images/zhsq/icons/suggestions.png',
-          title: '意见反馈',
-          link: '/pages/suggestion/add',
-          type: 'tab'
-        },
-        {
-          icon: 'http://119.3.220.213/images/zhsq/icons/settings.png',
-          title: '设置',
-          link: '/pages/setting/index',
-          type: 'tab'
+          icon: 'http://119.3.220.213/images/zhsq/icons/notebook.png',
+          title: '开门记录',
+          link: '/pages/door/record',
+          type: 'nav'
         }
       ]
     }
@@ -109,6 +97,10 @@
 <style lang="less">
   @import "../styles/custom/qr.less";
   ._home{
+    .weui-flex {
+      background: #818181;
+      border: solid 1px #F5F5F5;
+    }
     .bc_conter{
       width: 100%;
       min-height: 80vh;
@@ -116,6 +108,9 @@
       margin: auto;
       box-shadow: 0rpx -8rpx 34rpx white;
       position: absolute;
+      .text-center {
+        text-align: center;
+      }
     }
     .bc_title{
       width: 94%;

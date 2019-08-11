@@ -16,7 +16,8 @@ export default class userMixin extends wepy.mixin {
           success: ({code, data}) => {
             wx.setStorageSync('token', data.token)
             wx.setStorageSync('openid', data.token)
-            if(!data.token){
+            if (!data.token) {
+              // eslint-disable-next-line no-undef
               wx.setStorageSync('jump', '/' + getCurrentPages()[0].__route__)
             }
           }
@@ -43,11 +44,12 @@ export default class userMixin extends wepy.mixin {
 
   // get code
   $getCode() {
-    var code = wx.getStorageSync('code');
+    var code = wx.getStorageSync('code')
     if (!code) {
       this.$setCode()
     }
-    var code = wx.getStorageSync('code');
+    // eslint-disable-next-line no-redeclare
+    var code = wx.getStorageSync('code')
     return code
   }
 
@@ -55,7 +57,7 @@ export default class userMixin extends wepy.mixin {
     var user = wx.getStorageSync('user')
 
     // 不重复获取用户信息
-    if (!user ||  !user.nickName) {
+    if (!user || !user.nickName) {
       wepy.getUserInfo({
         success: (res) => {
           console.log('wepy.getUserInfo.success:', res)

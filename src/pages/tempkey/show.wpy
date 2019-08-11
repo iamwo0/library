@@ -1,0 +1,175 @@
+<template>
+  <view class="page-tempkey">
+    <view class="tempkey-container">
+      <view class="weui-article__h4">香格里拉西区10号楼2单元</view>
+      <view class="weui-article__section tempkey-content">
+        <view class="weui-article__h1 text-danger">2131</view>
+        <view class="weui-article__p">
+          <small class="tempkey-express-in">有效期至2019年11月2日18:00</small>
+        </view>
+      </view>
+      <view class="weui-article_section tempkey-desc">
+        <view class="weui-article__p">* 该密码能在门禁上使用一次</view>
+        <view class="weui-article__p">* 先按密码建,然后输入密码,按#号建确认</view>
+        <view class="weui-article__p">* 请注意密码安全,不要随意告诉他人,以免人身财产安全受到威胁</view>
+      </view>
+      <view class="weui-article_section">
+          <view class="tempkey-qr-image-container">
+            <image class="weui-article__img" src="{{ qrCode }}" mode="aspectFit"/>
+          </view>
+      </view>
+      <view class="weui-article_section">
+          <view class="tempkey-share-container">
+            <image class="weui-article__img" src="{{ shereIcon }}" mode="aspectFit"/>
+          </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import http from '../../mixins/http'
+  import base from '../../mixins/base'
+  import user from '../../mixins/user'
+  import ShareMessage from '../../mixins/ShareMessage'
+  import { service } from '../../config.js'
+
+  export default class pageTempKeys extends wepy.page {
+    mixins = [base, http, user, ShareMessage]
+    config = {
+      navigationBarTitleText: '临时密码',
+      enablePullDownRefresh: true,
+      navigationBarBackgroundColor: '#005b9e'
+    }
+
+    components = {
+    }
+
+    data = {
+      libraries: {},
+      user: {},
+      nickName: '加载中...',
+      message: false,
+      qrCode: 'http://119.3.220.213/images/zhsq/icons/qr-code.png',
+      shereIcon: 'http://119.3.220.213/images/zhsq/icons/share2.png'
+    }
+
+    computed = {
+      nickName() {
+        return (user && user.wechat && user.wechat.nickname) ? user.wechat.nickname : '未授权用户'
+      }
+    }
+
+    onShow() {
+      // 初始化页面数据
+      // this.initPageData()
+      // this.$parent.getTracker(this.$root.$name, this.config.navigationBarTitleText)
+    }
+    onShareAppMessage(res) {
+      return this.$parent.onShareAppMessage(this.config.navigationBarTitleText)
+    }
+
+    onLoad() {
+
+    }
+
+    onPullDownRefresh() {
+      this.initPageData()
+    }
+
+    // 初始化页面数据
+    initPageData() {
+      this.$get({url: `${service.user}/v3`}, {
+        success: ({code, data}) => {
+          this.user = data.user
+          this.libraries = data.libraries
+          this.libraries.forEach((item) => {
+            if (item.type == 'SHARE') {
+              item.url = '/pages/library/shareLibrary?id=' + item.id
+            } else {
+              item.url = '/pages/library/library?id=' + item.id
+            }
+          })
+          wx.setStorageSync('openid', data.user.wechat.openid)
+          wx.setStorageSync('is_new', data.user.is_news)
+          if (data.user.is_news) {
+            wepy.showTabBarRedDot({
+              index: 4
+            })
+            this.message = true
+          } else {
+            this.message = false
+            wepy.hideTabBarRedDot({
+              index: 4
+            })
+          }
+        }
+      })
+    }
+
+    methods = {
+      goto(url) {
+        wx.navigateTo({url: url})
+      }
+    }
+
+    components = {
+    }
+  }
+</script>
+
+<style lang="less">
+  // @import "../../styles/custom/fn.less";
+  // @import "../../styles/custom/reset.less";
+  page{
+    background: #f9f9f9;
+  }
+  .page-tempkey{
+    @userinfoHeight: 100rpx;
+    @userinfoSpace: 8rpx;
+    padding-top: 20rpx;
+    .tempkey-container {
+      text-align: center;
+      .weui-article__section {
+        margin: 40rpx auto;
+      }
+      .tempkey-desc {
+        text-align: left;
+      }
+      .tempkey-content {
+        padding: 40rpx;
+        background: #f0f0f0;
+        .text-danger {
+          color: red;
+        }
+        .tempkey-express-in {
+          font-size: .6rem;
+        }
+      }
+      .tempkey-desc {
+        padding: 40rpx;
+        background: #f0f0f0;
+        font-size: .6rem;
+      }
+      .tempkey-qr-image-container {
+        height: 200rpx;
+        width: 200rpx;
+        margin: 20rpx auto;
+        image {
+          max-width: 100%;
+          height: 100%;
+        }
+      }
+      .tempkey-share-container {
+        height: 80rpx;
+        width: 80rpx;
+        margin: 80rpx auto;
+        image {
+          max-width: 100%;
+          height: 100%;
+        }
+      }
+    }
+  }
+</style>

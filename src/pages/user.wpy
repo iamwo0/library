@@ -1,7 +1,7 @@
 <template>
   <view class="_home">
     <HeaderContainer></HeaderContainer>
-    <view class="status-container">
+    <view class="status-container" @tap="goto('user/profile')">
       <view class="sign-status">
         <view class="authed-user">小高</view>
         <view class="authed-status">已授权</view>
@@ -10,19 +10,15 @@
     <view class="bc_conter">
       <view class="bc_title">
         <view class="bc_icon flo_l text-center" wx:for="{{iconList}}" wx:key="index" @tap="goto({{item.link}}, {{item.type}})">
-          <image src="{{item.icon}}"  mode="aspectFit"></image>
-          <view class="font_26">{{item.title}}</view>
+          <image src="{{item.icon}}"  mode="aspectFit"/>
+          <view class="font_26">{{ item.title }}</view>
         </view>
         <view class="clearfloat"></view>
       </view>
-      <view class="bc_recommend">
-        <view class="title font_32">
-          公告信息
-          <span class="flo_r font_26" @tap="goto('/pages/borrow', 'tab')">
-            查看更多
-            <image src="http://119.3.220.213/images/zhsq/icons/more-gray.png" mode="aspectFit" style="width: 22rpx;height: 22rpx;margin-left: -6rpx;"></image>
-          </span>
-        </view>
+      <view class="master-key">
+          <view class="text-center">
+            <image src="http://119.3.220.213/images/zhsq/icons/door.png"  mode="aspectFit"/>
+          </view>
       </view>
     </view>
   </view>
@@ -40,7 +36,7 @@
   export default class pageUser extends wepy.page {
     mixins = [base, http, user, ShareMessage]
     config = {
-      navigationBarTitleText: '首页',
+      navigationBarTitleText: '我的',
       navigationBarBackgroundColor: '#005b9e',
       backgroundColor: '#005b9e',
       enablePullDownRefresh: false
@@ -61,7 +57,7 @@
           type: 'nav'
         },
         {
-          icon: 'http://119.3.220.213/images/zhsq/icons/prepare-report.png',
+          icon: 'http://119.3.220.213/images/zhsq/icons/question-mark.png',
           title: '房屋报修',
           link: '/pages/house/maintenance',
           type: 'nav'
@@ -69,27 +65,45 @@
         {
           icon: 'http://119.3.220.213/images/zhsq/icons/feedbacks.png',
           title: '我的反馈',
-          link: '/pages/feedback/mine',
+          link: '/pages/feedback/list',
           type: 'nav'
         },
         {
           icon: 'http://119.3.220.213/images/zhsq/icons/suggestions.png',
           title: '意见反馈',
-          link: '/pages/suggestion/add',
-          type: 'tab'
+          link: '/pages/feedback/add',
+          type: 'nav'
         },
         {
           icon: 'http://119.3.220.213/images/zhsq/icons/settings.png',
           title: '设置',
           link: '/pages/setting/index',
-          type: 'tab'
+          type: 'nav'
+        },
+        {
+          icon: 'http://119.3.220.213/images/zhsq/icons/blue-plus.png',
+          title: '添加成员',
+          link: '/pages/member/add',
+          type: 'nav'
+        },
+        {
+          icon: 'http://119.3.220.213/images/zhsq/icons/prepare-report.png',
+          title: '我的成员',
+          link: '/pages/member/list',
+          type: 'nav'
         }
       ]
     }
     onShow() {
       this.$parent.getTracker(this.$root.$name, this.config.navigationBarTitleText)
+      // var url = 'user/login'
+      // wx.navigateTo({url: url})
     }
     onLoad() {
+      // if (!0) {
+      //   var url = 'user/login'
+      //   wx.navigateTo({url: url})
+      // }
     }
     methods = {
       goto(url, type) {
@@ -116,6 +130,19 @@
       margin: auto;
       box-shadow: 0rpx -8rpx 34rpx white;
       position: absolute;
+      .text-center {
+        text-align: center;
+      }
+      .master-key {
+        height: 160rpx;
+        width: 160rpx;
+        margin: 40rpx auto;
+        image {
+          max-width: 100%;
+          max-height: 100%;
+          object-fit: contain;
+        }
+      }
     }
     .bc_title{
       width: 94%;

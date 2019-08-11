@@ -1,0 +1,155 @@
+<template>
+<view class="page" xmlns:wx="http://www.w3.org/1999/xhtml">
+    <view class="page__bd">
+        <view class="weui-cells weui-cells_after-title">
+          <view class="weui-cell">
+              <view class="weui-cell__bd">姓名</view>
+              <view class="weui-cell__bd">手机</view>
+              <view class="weui-cell__bd">状态</view>
+              <view class="weui-cell__bd">操作</view>
+          </view>
+        </view>
+        <view class="weui-cells weui-cells_after-title">
+          <view class="weui-flex" wx:for="{{ users }}" wx:key="index">
+              <view class="weui-flex__item">
+                <view class="placeholder">{{ item.name }}</view>
+              </view>
+              <view class="weui-flex__item">
+                <view class="placeholder">{{ item.mobile }}</view>
+              </view>
+              <view class="weui-flex__item">
+                <view class="placeholder text-danger" wx:if="{{ !item.status }}">待审核</view>
+                <view class="placeholder text-success" wx:if="{{ item.status }}">已审核</view>
+              </view>
+              <view class="weui-flex__item">
+                <view class="placeholder text-primary" wx:if="{{ !item.status }}">通过</view>
+                 <view class="placeholder text-info" wx:if="{{ item.status }}">通过</view>
+              </view>
+          </view>
+        </view>
+        <view class="weui-flex" wx:if="{{ !users.length }}">
+            <view class="weui-flex__item" @tap="mockData"><view class="placeholder">暂无审核用户</view></view>
+        </view>
+    </view>
+</view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import http from '../../mixins/http'
+  import base from '../../mixins/base'
+  import user from '../../mixins/user'
+  import ShareMessage from '../../mixins/ShareMessage'
+  // import { service } from '../../config.js'
+  import Mock from 'mockjs'
+
+  export default class pageUserShow extends wepy.page {
+    mixins = [base, http, user, ShareMessage]
+    config = {
+      navigationBarTitleText: '审核用户',
+      enablePullDownRefresh: true,
+      navigationBarBackgroundColor: '#005b9e'
+    }
+
+    components = {
+    }
+
+    data = {
+      users: []
+    }
+
+    computed = {
+    }
+
+    onShow() {
+      // 初始化页面数据
+      // this.initPageData()
+      // this.$parent.getTracker(this.$root.$name, this.config.navigationBarTitleText)
+    }
+    onShareAppMessage(res) {
+      return this.$parent.onShareAppMessage(this.config.navigationBarTitleText)
+    }
+
+    onLoad() {
+
+    }
+
+    onPullDownRefresh() {
+      this.initPageData()
+    }
+
+    // 初始化页面数据
+    initPageData() {
+      var data = Mock.mock({
+        'array|1-10': [
+          {
+            'name|+1': [
+              'Hello',
+              '树先生',
+              '姚女士'
+            ],
+            'mobile|+1': [
+              '13112344327',
+              '18667021361',
+              '17900136654'
+            ],
+            'status': {
+              'boolean|1': true
+            }
+          }
+        ]
+      })
+      this.users = data.array.map(item => {
+        return {
+          name: item.name,
+          mobile: item.mobile,
+          status: item.status.boolean
+        }
+      })
+      console.log('>>>>>>>>>', this.users)
+    }
+
+    methods = {
+      goto(url) {
+        wx.navigateTo({url: url})
+      },
+      mockData() {
+        this.initPageData()
+      }
+    }
+
+    components = {
+    }
+  }
+</script>
+
+<style lang="less">
+
+    .page {
+        .weui-cells_after-title, .weui-flex__item {
+          text-align: center;
+        }
+        .weui-cell {
+            margin: 32rpx auto;
+            background: #f5f5f5;
+
+        }
+        .weui-flex {
+          margin: 20rpx auto;
+          border-bottom: 2rpx solid #dddddd;
+          padding: 20rpx 0rpx;
+        }
+        .text-danger {
+          color: red;
+        }
+        .text-success {
+          color: green;
+        }
+        .text-primary {
+          color: blue;
+        }
+        .text-info {
+          color: gray;
+        }
+    }
+</style>

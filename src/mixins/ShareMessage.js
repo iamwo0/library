@@ -1,4 +1,6 @@
-import wepy from 'wepy';
+/* eslint-disable camelcase */
+/* eslint-disable no-undef */
+import wepy from 'wepy'
 import { service } from '../config.js'
 
 export default class ShareMessage extends wepy.mixin {
@@ -9,7 +11,7 @@ export default class ShareMessage extends wepy.mixin {
   onLoad(e) {
     let that = this
     that.from_openid = wx.getStorageSync('openid')
-    if(Boolean(e.from_openid)) {
+    if (e.from_openid) {
       wx.setStorageSync('from_openid', e.from_openid)
       // wx.showToast({
       //       title: e.from_openid,
@@ -31,9 +33,9 @@ export default class ShareMessage extends wepy.mixin {
       let title = this.config.navigationBarTitleText
       let that = this
       that.from_openid = wx.getStorageSync('openid')
-      let pages = getCurrentPages()    //获取加载的页面
-      let currentPage = pages[pages.length-1]    //获取当前页面的对象
-      let link = currentPage.route    //当前页面url
+      let pages = getCurrentPages()    // 获取加载的页面
+      let currentPage = pages[pages.length - 1]    // 获取当前页面的对象
+      let link = currentPage.route    // 当前页面url
       let library_id = currentPage.options.library_id ? currentPage.options.library_id : ''
       let options = currentPage.options.id
       let id = options ? '?id=' + options : ''
@@ -41,9 +43,9 @@ export default class ShareMessage extends wepy.mixin {
         id = options ? '?id=' + options + '&library_id=' + library_id : ''
       }
       let url = ''
-      if(options) {
+      if (options) {
         url = link + id + '&from_openid=' + that.from_openid
-      }else {
+      } else {
         url = link + '?from_openid=' + that.from_openid
       }
       if (wx.getStorageSync('libraryName')) {
@@ -61,13 +63,13 @@ export default class ShareMessage extends wepy.mixin {
         // 设置转发image，不设默认当前截图
         imageUrl: '',
         success: function(res) {
-          let shareTickets = res.shareTickets;
+          let shareTickets = res.shareTickets
           if (shareTickets.length == 0) {
             return false
           }
           wx.getShareInfo({
             shareTicket: shareTickets[0],
-            success: function(res){
+            success: function(res) {
               let encryptedData = res.encryptedData
               let iv = res.iv
               let code = ''
@@ -100,7 +102,6 @@ export default class ShareMessage extends wepy.mixin {
             duration: 1500
 
           })
-
         },
         fail: function(res) {
           // 转发失败

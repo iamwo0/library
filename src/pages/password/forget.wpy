@@ -1,0 +1,178 @@
+<template>
+  <view class="page-user">
+    <HeaderContainer></HeaderContainer>
+    <view class="status-container">
+      <view class="sign-status">
+        未登录
+      </view>
+    </view>
+    <view class="identification-form">
+      <div class="weui-cells weui-cells_form">
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">新密码: </label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" type="password" placeholder="请输入新密码"/>
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">确认密码: </label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" type="password" placeholder="确认新密码"/>
+            </div>
+        </div>
+        <div class="weui-cell">
+            <view class="section btn-area">
+              <button class="form-btn form-btn-primary" form-type="reset"  @tap="goto('/pages/user/login')">提 交</button>
+            </view>
+        </div>
+      </div>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import http from '../../mixins/http'
+  import base from '../../mixins/base'
+  import user from '../../mixins/user'
+  import ShareMessage from '../../mixins/ShareMessage'
+  import { service } from '../../config.js'
+  import Header from '../../components/header'
+
+  export default class pageUserPasswordReset extends wepy.page {
+    mixins = [base, http, user, ShareMessage]
+    config = {
+      navigationBarTitleText: '找回密码',
+      enablePullDownRefresh: true,
+      navigationBarBackgroundColor: '#005b9e'
+    }
+
+    components = {
+      HeaderContainer: Header
+    }
+
+    data = {
+      libraries: {},
+      user: {},
+      nickName: '加载中...',
+      message: false
+    }
+
+    computed = {
+      nickName() {
+        return (user && user.wechat && user.wechat.nickname) ? user.wechat.nickname : '未授权用户'
+      }
+    }
+
+    onShow() {
+      // 初始化页面数据
+      // this.initPageData()
+      // this.$parent.getTracker(this.$root.$name, this.config.navigationBarTitleText)
+    }
+    onShareAppMessage(res) {
+      return this.$parent.onShareAppMessage(this.config.navigationBarTitleText)
+    }
+
+    onLoad() {
+
+    }
+
+    onPullDownRefresh() {
+      this.initPageData()
+    }
+
+    // 初始化页面数据
+    initPageData() {
+      this.$get({url: `${service.user}/v3`}, {
+        success: ({code, data}) => {
+          this.user = data.user
+          this.libraries = data.libraries
+          this.libraries.forEach((item) => {
+            if (item.type == 'SHARE') {
+              item.url = '/pages/library/shareLibrary?id=' + item.id
+            } else {
+              item.url = '/pages/library/library?id=' + item.id
+            }
+          })
+          wx.setStorageSync('openid', data.user.wechat.openid)
+          wx.setStorageSync('is_new', data.user.is_news)
+          if (data.user.is_news) {
+            wepy.showTabBarRedDot({
+              index: 4
+            })
+            this.message = true
+          } else {
+            this.message = false
+            wepy.hideTabBarRedDot({
+              index: 4
+            })
+          }
+        }
+      })
+    }
+
+    methods = {
+      goto(url) {
+        wx.navigateTo({url: url})
+      }
+    }
+
+    components = {
+    }
+  }
+</script>
+
+<style lang="less">
+  // @import "../../styles/custom/fn.less";
+  // @import "../../styles/custom/reset.less";
+  page{
+    background: #f9f9f9;
+  }
+  .page-user{
+    @userinfoHeight: 100rpx;
+    @userinfoSpace: 8rpx;
+    .status-container {
+      position: absolute;
+      top: 40rpx;
+      width: 100%;
+      .sign-status {
+        height: 200rpx;
+        width: 200rpx;
+        line-height: 200rpx;
+        text-align: center;
+        color: #f9f9f9;
+        border: 4rpx solid #f9f9f9;
+        border-radius: 50%;
+        margin: 80rpx auto;
+      }
+    }
+    .identification-form {
+      margin: 0rpx 80rpx;
+      background: #f9f9f9;
+      margin-top: -80rpx;
+      border-top-left-radius: 8rpx;
+      border-top-right-radius: 8rpx;
+      padding: 40rpx;
+      .section {
+        margin: 80rpx auto;
+        .form-btn {
+          margin: 20rpx auto;
+          border-radius: 32rpx;
+        }
+        .form-btn-danger {
+          background: red;
+          border: 4rpx solid red;
+          color: #f9f9f9;
+        }
+        .form-btn-primary {
+          border: 4rpx solid #1E2F99;
+        }
+      }
+      .text-right {
+        text-align: right;
+        font-size: .6rem;
+        color: #1E2F99;
+      }
+    }
+  }
+</style>
