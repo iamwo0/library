@@ -3,8 +3,10 @@
     <HeaderContainer></HeaderContainer>
     <view class="status-container" @tap="goto('user/profile')">
       <view class="sign-status">
-        <view class="authed-user">小高</view>
-        <view class="authed-status">已授权</view>
+        <button open-type="getUserInfo" bindgetuserinfo="onGotUserInfo" class="get-userinfo-btn">
+          <view class="authed-user">小高</view>
+          <view class="authed-status">已授权</view>
+        </button>
       </view>
     </view>
     <view class="bc_conter">
@@ -53,7 +55,7 @@
         {
           icon: 'http://119.3.220.213/images/zhsq/icons/users.png',
           title: '用户管理',
-          link: '/pages/user/management',
+          link: '/pages/user/manage',
           type: 'nav'
         },
         {
@@ -95,7 +97,7 @@
       ]
     }
     onShow() {
-      this.$parent.getTracker(this.$root.$name, this.config.navigationBarTitleText)
+      // this.$parent.getTracker(this.$root.$name, this.config.navigationBarTitleText)
       // var url = 'user/login'
       // wx.navigateTo({url: url})
     }
@@ -115,6 +117,9 @@
       formSubmit(e) {
         this.formId.push(e.detail.formId)
         console.log(this.formId)
+      },
+      onGotUserInfo(res) {
+        console.log('---------getUserInfo-------', res)
       }
     }
   }
@@ -209,6 +214,10 @@
         border: 4rpx solid #f9f9f9;
         border-radius: 50%;
         margin: 80rpx auto;
+        .get-userinfo-btn {
+          background: none;
+          color: #f9f9f9;
+        }
         .authed-user {
           height: 120rpx;
           line-height: 120rpx;

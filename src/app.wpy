@@ -4,10 +4,6 @@
 //  import http from './mixins/http.js'
   import {service} from './config.js'
 
-  // var ga = require('./ga.js')
-  // var GoogleAnalytics = ga.GoogleAnalytics
-  // var HitBuilders = ga.HitBuilders
-
   export default class extends wepy.app {
     config = {
       pages: [
@@ -38,12 +34,16 @@
           'root': 'pages/user',
           'pages': [
             'login',
-            'register',
-            'identification',
-            'information',
             'profile',
-            'management',
-            'show'
+            'management'
+          ]
+        },
+        {
+          'root': 'pages/register',
+          'pages': [
+            'step1',
+            'step2',
+            'step3'
           ]
         },
         {
@@ -91,6 +91,12 @@
           'pages': [
             'avatar'
           ]
+        },
+        {
+          'root': 'pages/audit',
+          'pages': [
+            'list'
+          ]
         }
       ],
       window: {
@@ -136,97 +142,35 @@
     }
 
     onLaunch(options) {
-      console.log(options)
-//      if (options.scene == 1037 || options.scene == 1038) {
-//        let uid = options.referrerInfo.extraData.uid
-//      console.log(JSON.stringify(uid))
-//        wx.setStorageSync('uid', uid)
-//        wepy.login({
-//          success: (res) => {
-//            let code = res.code
-//            let data = {
-//              wechat_code: code
-//            }
-//            wx.request({
-//              url: service.register_infor,
-//              header: {
-//                'Content-Type': 'application/x-www-form-urlencoded'
-//              },
-//              method: 'get',
-//              data: data,
-//              success: function (res) {
-//                let isRegister = res.data.data.is_register
-//                if (isRegister == 1) {
-//                  wepy.login({
-//                    success: (res) => {
-//                      let codeV = res.code
-//                      wx.request({
-//                        url: service.skip + '/infor',
-//                        header: {'Content-Type': 'application/x-www-form-urlencoded'},
-//                        method: 'get',
-//                        data: {
-//                          wechat_code: codeV,
-//                          uid: uid
-//                        },
-//                        success: function (res) {
-//                          let token = res.data.data.access_token
-//                          wx.setStorageSync('token', token)
-//                          console.log('success')
-//                          console.log(res)
-//                        }
-//                      })
-//                    },
-//                    fail: (res) => {
-//                      console.log('wepy.login.fail:', res)
-//                    }
-//                  })
-//                } else {
-//                  wepy.getUserInfo({
-//                    success: (res) => {
-//                      let iv = res.iv
-//                      let encryptedData = res.encryptedData
-//                      wepy.login({
-//                        success: (res) => {
-//                          let codeV = res.code
-//                          wx.request({
-//                            url: service.skip,
-//                            header: {'Content-Type': 'application/x-www-form-urlencoded'},
-//                            method: 'get',
-//                            data: {
-//                              wechat_code: codeV,
-//                              uid: uid,
-//                              iv: iv,
-//                              encryptedData: encryptedData
-//                            },
-//                            success: function (res) {
-//                              let token = res.data.data.access_token
-//                              wx.setStorageSync('token', token)
-//                              console.log('success')
-//                              console.log(res)
-//                            }
-//                          })
-//                        },
-//                        fail: (res) => {
-//                          console.log('wepy.login.fail:', res)
-//                        }
-//                      })
-//                    },
-//                    fail: (res) => {
-//                    }
-//                  })
-//                }
-//              }
-//            })
-//          },
-//          fail: (res) => {
-//            console.log('wepy.login.fail:', res)
-//          }
-//        })
-//      }
+      console.log('--onLanch--', options)
+      wx.getSetting({
+        success(res) {
+          console.log('--getSettings---', res)
+          // if (!res.authSetting['scope.camera']) {
+          //   wx.authorize({
+          //     scope: 'scope.camera',
+          //     success () {
+          //       // 用户已经同意小程序使用录音功能，后续调用 wx.startRecord 接口不会弹窗询问
+          //       wx.startRecord()
+          //     }
+          //   })
+          // }
+          // if (!res.authSetting['scope.writePhotosAlbum']) {
+          //   wx.authorize({
+          //     scope: 'scope.writePhotosAlbum',
+          //     success () {
+          //       // 用户已经同意小程序使用录音功能，后续调用 wx.startRecord 接口不会弹窗询问
+          //       wx.startRecord()
+          //     }
+          //   })
+          // }
+        }
+      })
     }
 
     onShow(options) {
 //      let that = this
+      console.log('--onShow---', options)
       if (options.scene == 1044) {
         wx.getShareInfo({
           shareTicket: options.shareTicket,
@@ -254,7 +198,6 @@
                   success: function (res) {
                     let data = res.data.data
                     console.log(data)
-//                  debugger
                   }
                 })
               },
@@ -353,20 +296,6 @@
       return typeof item === 'undefined'
     }
 
-    // Google analytics
-    getTracker(name, text) {
-      // if (!this.globalData.tracker) {
-      //   // 初始化GoogleAnalytics Tracker
-      //   this.globalData.tracker = GoogleAnalytics.getInstance(this)
-      //     .setAppName('智慧e家')
-      //     .setAppVersion('v0.4')
-      //     .newTracker('UA-109097480-1')
-      // }
-      // var t = this.globalData.tracker
-      // t.setScreenName(text)
-      // t.send(new HitBuilders.ScreenViewBuilder().build())
-    }
-
     /* ========================= 更新缓存信息 ======================== */
     $updateGlobalData(name, obj) {
       // 校验: globalData
@@ -391,5 +320,4 @@
 </script>
 <style lang="less">
 @import "./styles/weui/index.less";
-// @import "./styles/custom/index.less";
 </style>

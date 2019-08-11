@@ -19,7 +19,7 @@
         </view>
         <view class="section btn-area">
           <button class="form-btn form-btn-danger" @tap="goto('/pages/user')">登陆</button>
-          <button class="form-btn form-btn-primary" @tap="goto('register')">注册</button>
+          <button class="form-btn form-btn-primary" @tap="goto('/pages/register/step1')">注册</button>
         </view>
       </form>
     </view>

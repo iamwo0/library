@@ -75,10 +75,14 @@
       ]
     }
     onShow() {
-      this.$parent.getTracker(this.$root.$name, this.config.navigationBarTitleText)
+      // this.$parent.getTracker(this.$root.$name, this.config.navigationBarTitleText)
+      var userInfo = this.$parent.$updateGlobalData('nickname', '蔷锅')
+      console.log(userInfo)
     }
-    onLoad() {
-    }
+    // async onLoad() {
+    //   await wepy.login();
+    //   this.userInfo = await wepy.getUserInfo();
+    // }
     methods = {
       goto(url, type) {
         if (type == 'tab') {

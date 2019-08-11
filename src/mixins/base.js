@@ -1,29 +1,16 @@
 import wepy from 'wepy'
 
 export default class baseMixin extends wepy.mixin {
-  /**
-   * [公共方法]
-   * @param  {[type]}  item [description]
-   * @return {Boolean}      [description]
-   */
-  noop() {
-    return null
-  }
   hasOwn(obj, type) {
     return Object.prototype.hasOwnProperty.call(obj, type)
   }
-  $showToast(title) {
+  $showToast(title, type, duration) {
+    var iconType = type || 'none'
+    var toastDuration = duration || 1200
     wx.showToast({
       title: title,
-      icon: 'none',
-      duration: 1200
-    })
-  }
-  $Toast_success(title) {
-    wx.showToast({
-      title: title,
-      icon: 'success',
-      duration: 1200
+      icon: iconType,
+      duration: toastDuration
     })
   }
   $showLoading(title) {
@@ -79,10 +66,6 @@ export default class baseMixin extends wepy.mixin {
   getObject(item, defaultObj) {
     return this.isObject(item) ? item : (defaultObj || {})
   }
-  getFunction(item) {
-    return this.isFunction(item) ? item : noop
-  }
-
   /**
    * [JSON方法]
    * @param  {[type]}  item [description]
@@ -139,21 +122,5 @@ export default class baseMixin extends wepy.mixin {
   // 跳转链接
   $goto(url) {
     wx.navigateTo({url: url})
-  }
-  // 缓存当前页面
-  $cache(title) {
-    var pages = getCurrentPages()    // 获取加载的页面
-
-    var currentPage = pages[pages.length - 1]    // 获取当前页面的对象
-
-    var options = currentPage.options
-    var url = '/' + currentPage.route
-    if (options.id) {
-      url = '/' + currentPage.route + `?id=${options.id}`
-    } else if (options.id && options.library_id) {
-      url = '/' + currentPage.route + '?id=' + options.id + `&library_id=${options.library_id}`
-    }
-    console.log(url)
-    wx.setStorageSync(title, url)
   }
 }

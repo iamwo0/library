@@ -3,7 +3,7 @@
     <HeaderContainer></HeaderContainer>
     <view class="status-container">
       <view class="sign-status">
-        未登录
+        {{ nickName }}
       </view>
     </view>
     <view class="sign-form">
@@ -27,7 +27,7 @@
         </div>
         <div class="weui-cell">
             <view class="section btn-area">
-              <button class="form-btn form-btn-primary" form-type="reset" @tap="goto('identification')">下一步</button>
+              <button class="form-btn form-btn-primary" form-type="reset" @tap="goto('step2')">下一步</button>
             </view>
         </div>
       </div>
@@ -128,8 +128,6 @@
 </script>
 
 <style lang="less">
-  // @import "../../styles/custom/fn.less";
-  // @import "../../styles/custom/reset.less";
   page{
     background: #f9f9f9;
   }
