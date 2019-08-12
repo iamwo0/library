@@ -28,15 +28,9 @@
 
 <script>
   import wepy from 'wepy'
-  import http from '../mixins/http'
-  import base from '../mixins/base'
-  import user from '../mixins/user'
-  import ShareMessage from '../mixins/ShareMessage'
-  // import { service } from '../config.js'
   import Header from '../components/header'
 
   export default class pageUser extends wepy.page {
-    mixins = [base, http, user, ShareMessage]
     config = {
       navigationBarTitleText: '我的',
       navigationBarBackgroundColor: '#005b9e',
@@ -47,10 +41,6 @@
       HeaderContainer: Header
     }
     data = {
-      list: {
-        image: 'http://119.3.220.213/images/zhsq/home/home_gelly.jpg',
-        url: '/pages/user'
-      },
       iconList: [
         {
           icon: 'http://119.3.220.213/images/zhsq/icons/users.png',
@@ -97,15 +87,8 @@
       ]
     }
     onShow() {
-      // this.$parent.getTracker(this.$root.$name, this.config.navigationBarTitleText)
-      // var url = 'user/login'
-      // wx.navigateTo({url: url})
     }
     onLoad() {
-      // if (!0) {
-      //   var url = 'user/login'
-      //   wx.navigateTo({url: url})
-      // }
     }
     methods = {
       goto(url, type) {
@@ -113,10 +96,6 @@
           return wx.switchTab({url: url})
         }
         wx.navigateTo({url: url})
-      },
-      formSubmit(e) {
-        this.formId.push(e.detail.formId)
-        console.log(this.formId)
       },
       onGotUserInfo(res) {
         console.log('---------getUserInfo-------', res)

@@ -149,14 +149,8 @@
 
 <script>
   import wepy from 'wepy'
-  import http from '../../mixins/http'
-  import base from '../../mixins/base'
-  import user from '../../mixins/user'
-  import ShareMessage from '../../mixins/ShareMessage'
-  import { service } from '../../config.js'
 
   export default class pageUserRegisterInformation extends wepy.page {
-    mixins = [base, http, user, ShareMessage]
     config = {
       navigationBarTitleText: '添加用户',
       enablePullDownRefresh: true,
@@ -181,18 +175,13 @@
     }
 
     computed = {
-      nickName() {
-        return (user && user.wechat && user.wechat.nickname) ? user.wechat.nickname : '未授权用户'
-      }
     }
 
     onShow() {
-      // 初始化页面数据
-      // this.initPageData()
-      // this.$parent.getTracker(this.$root.$name, this.config.navigationBarTitleText)
     }
+
     onShareAppMessage(res) {
-      return this.$parent.onShareAppMessage(this.config.navigationBarTitleText)
+
     }
 
     onLoad() {
@@ -205,32 +194,7 @@
 
     // 初始化页面数据
     initPageData() {
-      this.$get({url: `${service.user}/v3`}, {
-        success: ({code, data}) => {
-          this.user = data.user
-          this.libraries = data.libraries
-          this.libraries.forEach((item) => {
-            if (item.type == 'SHARE') {
-              item.url = '/pages/library/shareLibrary?id=' + item.id
-            } else {
-              item.url = '/pages/library/library?id=' + item.id
-            }
-          })
-          wx.setStorageSync('openid', data.user.wechat.openid)
-          wx.setStorageSync('is_new', data.user.is_news)
-          if (data.user.is_news) {
-            wepy.showTabBarRedDot({
-              index: 4
-            })
-            this.message = true
-          } else {
-            this.message = false
-            wepy.hideTabBarRedDot({
-              index: 4
-            })
-          }
-        }
-      })
+
     }
 
     methods = {

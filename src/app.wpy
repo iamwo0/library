@@ -1,8 +1,7 @@
 <script>
   import wepy from 'wepy'
   import 'wepy-async-function'
-//  import http from './mixins/http.js'
-  import {service} from './config.js'
+  // import {service} from './config.js'
 
   export default class extends wepy.app {
     config = {
@@ -131,9 +130,7 @@
       debug: true
     }
     globalData = {
-      user: null,
-      cart: null,
-      tracker: null
+      user: null
     }
 
     constructor() {
@@ -166,155 +163,6 @@
           // }
         }
       })
-    }
-
-    onShow(options) {
-//      let that = this
-      console.log('--onShow---', options)
-      if (options.scene == 1044) {
-        wx.getShareInfo({
-          shareTicket: options.shareTicket,
-          success: function (res) {
-            let encryptedData = res.encryptedData
-            let iv = res.iv
-            let code = ''
-            wepy.login({
-              success: (res) => {
-                code = res.code
-                let data = {
-                  code: code,
-                  iv: iv,
-                  encryptedData: encryptedData
-                }
-                console.log(service.infor)
-                console.log(this)
-                wx.request({
-                  url: service.infor,
-                  header: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                  },
-                  method: 'POST',
-                  data: data,
-                  success: function (res) {
-                    let data = res.data.data
-                    console.log(data)
-                  }
-                })
-              },
-              fail: (res) => {
-                console.log('wepy.login.fail:', res)
-              }
-            })
-          }
-        })
-      }
-    }
-
-    onShareAppMessage(title = '智慧e家') {
-      let that = this
-      that.from_openid = wx.getStorageSync('openid')
-      let pages = getCurrentPages()    // 获取加载的页面
-      let currentPage = pages[pages.length - 1]    // 获取当前页面的对象
-      let link = currentPage.route    // 当前页面url
-      let libraryId = currentPage.options.library_id ? currentPage.options.library_id : ''
-      let options = currentPage.options.id
-      let id = options ? '?id=' + options : ''
-      if (libraryId) {
-        id = options ? '?id=' + options + '&library_id=' + libraryId : ''
-      }
-      let url = ''
-      if (options) {
-        url = link + id + '&from_openid=' + that.from_openid
-      } else {
-        url = link + '?from_openid=' + that.from_openid
-      }
-      console.log(url)
-      return {
-        title: title,
-        path: url,
-        success: function (res) {
-          let shareTickets = res.shareTickets
-          if (shareTickets.length == 0) {
-            return false
-          }
-          wx.getShareInfo({
-            shareTicket: shareTickets[0],
-            success: function (res) {
-              let encryptedData = res.encryptedData
-              let iv = res.iv
-              let code = ''
-              wepy.login({
-                success: (res) => {
-                  code = res.code
-                  let data = {
-                    code: code,
-                    iv: iv,
-                    encryptedData: encryptedData
-                  }
-                  that.$post({url: service.infor, data}, {
-                    success: ({code, data}) => {
-                      that.openGid = data.openGId
-                      that.$apply()
-                    },
-                    fail: ({code, data}) => {
-                    },
-                    complete: () => {
-                      this.loading = false
-                    }
-                  })
-                },
-                fail: (res) => {
-                  console.log('wepy.login.fail:', res)
-                }
-              })
-            }
-          })
-          wx.showToast({
-            title: '转发成功',
-            icon: 'success',
-            duration: 1500
-
-          })
-        },
-        fail: function (res) {
-          // 转发失败
-          console.log(res.errMsg)
-        }
-      }
-    }
-
-    /* ============= 工具方法（app没法用mixins，就再写一遍了） ============= */
-    isObject(item) {
-      return typeof item === 'object' && !this.isArray(item)
-    }
-
-    isArray(item) {
-      return Object.prototype.toString.apply(item) === '[object Array]'
-    }
-
-    isUndefined(item) {
-      return typeof item === 'undefined'
-    }
-
-    /* ========================= 更新缓存信息 ======================== */
-    $updateGlobalData(name, obj) {
-      // 校验: globalData
-      if (!this.globalData) return
-      // 校验: 操作字段
-      if (typeof name !== 'string' || name === '') return {}
-      // 取已有信息
-      const info = this.globalData[name] || {}
-      // 更新缓存
-      if (obj && this.isObject(obj)) {
-        // Object合并第一层
-        this.globalData[name] = Object.assign({}, info, obj)
-      } else if (!this.isUndefined(obj)) {
-        // 其他非undefined数据直接覆盖
-        this.globalData[name] = obj
-      }
-      this.$apply && this.$apply()
-      console.info(`[${obj ? 'UPDATE' : 'GET'} GlobalData ${name}]:`, this.globalData[name])
-      return this.globalData[name]
     }
   }
 </script>

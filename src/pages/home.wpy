@@ -24,15 +24,9 @@
 
 <script>
   import wepy from 'wepy'
-  import http from '../mixins/http'
-  import base from '../mixins/base'
-  import user from '../mixins/user'
-  import ShareMessage from '../mixins/ShareMessage'
-  // import { service } from '../config.js'
   import Carsouel from '../components/carousel'
 
   export default class pageQr extends wepy.page {
-    mixins = [base, http, user, ShareMessage]
     config = {
       navigationBarTitleText: '首页',
       navigationBarBackgroundColor: '#005b9e',
@@ -43,10 +37,6 @@
       CarsouelSwiper: Carsouel
     }
     data = {
-      list: {
-        image: 'http://119.3.220.213/images/zhsq/home/home_gelly.jpg',
-        url: '/pages/user'
-      },
       iconList: [
         {
           icon: 'http://119.3.220.213/images/zhsq/icons/lock.png',
@@ -75,24 +65,17 @@
       ]
     }
     onShow() {
-      // this.$parent.getTracker(this.$root.$name, this.config.navigationBarTitleText)
-      var userInfo = this.$parent.$updateGlobalData('nickname', '蔷锅')
-      console.log(userInfo)
     }
-    // async onLoad() {
-    //   await wepy.login();
-    //   this.userInfo = await wepy.getUserInfo();
-    // }
+    async onLoad() {
+      await wepy.login()
+      this.userInfo = await wepy.getUserInfo()
+    }
     methods = {
       goto(url, type) {
         if (type == 'tab') {
           return wx.switchTab({url: url})
         }
         wx.navigateTo({url: url})
-      },
-      formSubmit(e) {
-        this.formId.push(e.detail.formId)
-        console.log(this.formId)
       }
     }
   }
