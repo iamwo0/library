@@ -28,7 +28,7 @@
 
   export default class pageTempKeys extends wepy.page {
     config = {
-      navigationBarTitleText: '全部钥匙',
+      navigationBarTitleText: '一键开锁',
       enablePullDownRefresh: true,
       navigationBarBackgroundColor: '#005b9e'
     }

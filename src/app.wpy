@@ -14,6 +14,7 @@
           'root': 'pages/tempkey',
           'pages': [
             'list',
+            'validity',
             'show'
           ]
         },
