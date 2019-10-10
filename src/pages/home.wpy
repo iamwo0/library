@@ -45,9 +45,9 @@
           type: 'nav'
         },
         {
-          icon: 'http://119.3.220.213/images/zhsq/icons/center.png',
-          title: '物管信息',
-          link: '/pages/house/maintenance',
+          icon: 'http://119.3.220.213/images/zhsq/icons/keys.png',
+          title: '一键开锁',
+          link: '/pages/onekeyopen/list',
           type: 'nav'
         },
         {

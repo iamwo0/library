@@ -1,0 +1,91 @@
+<template>
+  <view class="page-tempkeys">
+    <view class="weui-cells weui-cells_after-title">
+      <view class="weui-cell weui-cell_example" @tap="openDoor()">
+          <view class="weui-cell__hd">
+              <image src="{{ icon }}" style="margin-right: 16px;vertical-align: middle;width:20px; height: 20px;"/>
+          </view>
+          <view class="weui-cell__bd">保利.金香槟2号楼3单元</view>
+          <view class="weui-cell__ft">
+            <button class="weui-btn mini-btn" type="default" size="mini">一键开锁</button>
+          </view>
+      </view>
+      <view class="weui-cell weui-cell_example" @tap="openDoor()">
+          <view class="weui-cell__hd">
+              <image src="{{ icon }}" style="margin-right: 16px;vertical-align: middle;width:20px; height: 20px;"/>
+          </view>
+          <view class="weui-cell__bd">恒大绿洲西2门</view>
+          <view class="weui-cell__ft">
+            <button class="weui-btn mini-btn" type="default" size="mini">一键开锁</button>
+          </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class pageTempKeys extends wepy.page {
+    config = {
+      navigationBarTitleText: '全部钥匙',
+      enablePullDownRefresh: true,
+      navigationBarBackgroundColor: '#005b9e'
+    }
+
+    components = {
+    }
+
+    data = {
+      icon: 'http://119.3.220.213/images/zhsq/icons/keys.png'
+    }
+
+    computed = {
+    }
+
+    onShow() {
+    }
+
+    onLoad() {
+
+    }
+
+    onPullDownRefresh() {
+      this.initPageData()
+    }
+
+    // 初始化页面数据
+    initPageData() {
+    }
+
+    methods = {
+      goto(url) {
+        wx.navigateTo({url: url})
+      },
+      openDoor() {
+
+      }
+    }
+
+    components = {
+    }
+  }
+</script>
+
+<style lang="less">
+  page{
+    background: #f9f9f9;
+  }
+  .page-tempkeys{
+    @userinfoHeight: 100rpx;
+    @userinfoSpace: 8rpx;
+    .weui-cell {
+      .weui-cell__ft {
+        font-size: .6rem;
+      }
+    }
+    .weui-cell_example {
+      margin: 20rpx auto;
+    }
+  }
+</style>

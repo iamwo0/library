@@ -18,6 +18,12 @@
           ]
         },
         {
+          'root': 'pages/onekeyopen',
+          'pages': [
+            'list'
+          ]
+        },
+        {
           'root': 'pages/door',
           'pages': [
             'record'
