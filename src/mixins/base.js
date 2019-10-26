@@ -4,13 +4,20 @@ export default class baseMixin extends wepy.mixin {
   hasOwn(obj, type) {
     return Object.prototype.hasOwnProperty.call(obj, type)
   }
-  $showToast(title, type, duration) {
+  $showToast(title, type, duration, cb) {
+    var that = this
     var iconType = type || 'none'
     var toastDuration = duration || 1200
     wx.showToast({
       title: title,
       icon: iconType,
-      duration: toastDuration
+      duration: toastDuration,
+      mask: true,
+      success: function() {
+        if (cb && that.isFunction(cb)) {
+          cb()
+        }
+      }
     })
   }
   $showLoading(title) {
@@ -119,8 +126,36 @@ export default class baseMixin extends wepy.mixin {
     }, param))
   }
 
+  urlWithoutAuthCheck(url) {
+    var withoutAuth = false
+    withoutAuth = url.indexOf('login') > -1
+    withoutAuth = url.indexOf('register') > -1
+    console.log('check url is need auth', url, withoutAuth)
+    return withoutAuth
+  }
+
   // 跳转链接
-  $goto(url) {
-    wx.navigateTo({url: url})
+  methods = {
+    goto(url, type) {
+      var that = this
+      var withoutAuth = false
+      withoutAuth = that.urlWithoutAuthCheck(url)
+      try {
+        var authed = wx.getStorageSync('token')
+        if (authed || withoutAuth) {
+          if (type == 'tab') {
+            return wx.switchTab({url: url})
+          }
+          wx.navigateTo({url: url})
+        } else {
+          that.$showToast('请先登录', 'loading', 1200, function() {
+            wx.navigateTo({url: '/pages/user/login'})
+          })
+        }
+      } catch (e) {
+        // Do something when catch error
+        console.error('handle get token error: ', e)
+      }
+    }
   }
 }

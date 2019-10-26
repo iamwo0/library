@@ -9,7 +9,7 @@
     <view class="sign-form">
       <form bindsubmit="formSubmit" bindreset="formReset">
         <view class="section">
-          <input name="input" type="text" placeholder="请输入手机号" />
+          <input name="input" type="number" maxlength="11" placeholder="请输入手机号" value="{{loginMobile}}" focus="{{focusInputUser}}" @input="loginMobileInput"/>
         </view>
         <view class="section">
           <input name="input" type="password" placeholder="请输入密码" />
@@ -18,7 +18,7 @@
           <small @tap="goto('/pages/password/forget')">忘记密码 ?</small>
         </view>
         <view class="section btn-area">
-          <button class="form-btn form-btn-danger" @tap="goto('/pages/user')">登陆</button>
+          <button class="form-btn form-btn-danger" @tap="submitLogin()">登陆</button>
           <button class="form-btn form-btn-primary" @tap="goto('/pages/register/step1')">注册</button>
         </view>
       </form>
@@ -28,9 +28,11 @@
 
 <script>
   import wepy from 'wepy'
+  import base from '../../mixins/base'
   import Header from '../../components/header'
 
   export default class pageUserLogin extends wepy.page {
+    mixins = [base]
     config = {
       navigationBarTitleText: '登陆',
       enablePullDownRefresh: true,
@@ -42,6 +44,10 @@
     }
 
     data = {
+      loginMobile: '',
+      loginPwd: '',
+      focusInputUser: false,
+      focusInputPwd: false
     }
 
     computed = {
@@ -59,8 +65,19 @@
     }
 
     methods = {
-      goto(url) {
-        wx.navigateTo({url: url})
+      loginMobileInput (e) {
+        this.loginMobile = e.detail.value
+        console.log(this.loginMobile)
+      },
+
+      submitLogin() {
+        var that = this
+        console.log('will login by user: ', that.loginMobile, '!!!!')
+        if (!that.loginMobile.length) {
+          this.$showToast('请输入手机号码')
+          that.focusInputUser = true
+          return false
+        }
       }
     }
 

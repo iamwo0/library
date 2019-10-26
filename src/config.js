@@ -2,7 +2,7 @@
                         小程序配置文件
 ======================================================== */
 // 域名
-var host = 'http://zhsq.exrample.com/api'
+var host = 'http://47.107.228.1:8080/community/resources/service'
 
 export const service = {
     // 登录接口

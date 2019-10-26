@@ -24,9 +24,11 @@
 
 <script>
   import wepy from 'wepy'
+  import base from '../mixins/base'
   import Carsouel from '../components/carousel'
 
   export default class pageQr extends wepy.page {
+    mixins = [base]
     config = {
       navigationBarTitleText: '首页',
       navigationBarBackgroundColor: '#005b9e',
@@ -66,17 +68,12 @@
     }
     onShow() {
     }
-    async onLoad() {
-      await wepy.login()
-      this.userInfo = await wepy.getUserInfo()
+    onLoad() {
     }
     methods = {
-      goto(url, type) {
-        if (type == 'tab') {
-          return wx.switchTab({url: url})
-        }
-        wx.navigateTo({url: url})
-      }
+      // goto(url, type) {
+      //   console.log('goto in pages')
+      // }
     }
   }
 </script>

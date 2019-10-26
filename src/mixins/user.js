@@ -151,7 +151,7 @@ export default class userMixin extends wepy.mixin {
     // 先判断是否支持开启授权页的API
     wx.openSetting && wx.showModal({
       title: '授权提示',
-      content: 'BookMall希望获得以下权限：\n · 获取您的公开信息（昵称、头像等）',
+      content: '智慧社区希望获得以下权限：\n · 获取您的公开信息（昵称、头像等）',
       confirmText: '去授权',
       cancelText: '先不授权',
       success: (res) => {

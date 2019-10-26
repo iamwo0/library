@@ -11,10 +11,16 @@
         <div class="weui-cell">
             <div class="weui-cell__hd"><label class="weui-label"></label></div>
             <div class="weui-cell__bd">
-                <input class="weui-input" type="number" pattern="[0-9]*" placeholder="请输入手机号码"/>
+                <input class="weui-input" type="text" placeholder="请输入您的姓名" value="{{registerName}}" focus="{{focusInputRegisterName}}"  @input="registerNameInput"/>
             </div>
         </div>
-        <div class="weui-cell weui-cell_vcode">
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label"></label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" type="number" pattern="[0-9]*" placeholder="请输入手机号码" value="{{registerMobile}}" focus="{{focusInputRegisterMobile}}"  @input="registerMobileInput"/>
+            </div>
+        </div>
+        <!-- <div class="weui-cell weui-cell_vcode">
             <div class="weui-cell__hd">
                 <label class="weui-label"></label>
             </div>
@@ -24,10 +30,10 @@
             <div class="weui-cell__ft">
                 <button class="weui-vcode-btn">获取验证码</button>
             </div>
-        </div>
+        </div> -->
         <div class="weui-cell">
             <view class="section btn-area">
-              <button class="form-btn form-btn-primary" form-type="reset" @tap="goto('step2')">下一步</button>
+              <button class="form-btn form-btn-primary" form-type="reset" @tap="mobileCheck()">下一步</button>
             </view>
         </div>
       </div>
@@ -37,9 +43,13 @@
 
 <script>
   import wepy from 'wepy'
+  import { service } from '../../config.js'
+  import base from '../../mixins/base'
+  import http from '../../mixins/http'
   import Header from '../../components/header'
 
   export default class pageUserRegister extends wepy.page {
+    mixins = [base, http]
     config = {
       navigationBarTitleText: '注册',
       enablePullDownRefresh: true,
@@ -51,6 +61,10 @@
     }
 
     data = {
+      registerName: '',
+      registerMobile: '',
+      focusInputRegisterName: false,
+      focusInputRegisterMobile: false
     }
 
     computed = {
@@ -80,8 +94,49 @@
     }
 
     methods = {
-      goto(url) {
-        wx.navigateTo({url: url})
+      registerNameInput(e) {
+        console.log('handle input register user nickname: ', e.detail.value)
+        this.registerName = e.detail.value
+      },
+
+      registerMobileInput(e) {
+        console.log('handle input register user mobile: ', e.detail.value)
+        this.registerMobile = e.detail.value
+      },
+
+      mobileCheck() {
+        let that = this
+        if (!that.registerName) {
+          that.focusInputRegisterName = true
+          return false
+        }
+        if (!that.registerMobile) {
+          that.focusInputRegisterMobile = true
+          return false
+        }
+        that.$post({
+          url: service.host,
+          data: {
+            'serverId': {
+              'method': 'validateMobile'
+            },
+            'param': {
+              'name': that.registerName,
+              'mobile': that.registerMobile
+            }
+          }
+        }, {
+          success: (response) => {
+            console.log('handel mobile checked', response)
+            if (response.msgcode == 0) {
+              // 注册验证手机号码成功
+              that.$showToast('验证通过', 'success')
+              wx.navigateTo({url: 'step2'})
+            }
+          },
+          fail: ({code, data}) => {},
+          complete: () => { this.loaded = false }
+        })
       }
     }
 
