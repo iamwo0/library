@@ -11,12 +11,12 @@
         <div class="weui-cell">
             <div class="weui-cell__hd"><label class="weui-label"></label></div>
             <div class="weui-cell__bd">
-                <input class="weui-input" type="text" placeholder="请输入管理员账号进行验证"/>
+                <input class="weui-input" type="text" placeholder="请输入管理员账号进行验证" value="{{ managerMobile }}" focus="{{focusManagerMobile}}"  @input="managerMobileInput"/>
             </div>
         </div>
         <div class="weui-cell">
             <view class="section btn-area">
-              <button class="form-btn form-btn-primary" form-type="reset"  @tap="goto('step3')">下一步</button>
+              <button class="form-btn form-btn-primary" form-type="reset"  @tap="managerCheck()">下一步</button>
             </view>
         </div>
       </div>
@@ -26,9 +26,13 @@
 
 <script>
   import wepy from 'wepy'
+  import { service } from '../../config.js'
+  import base from '../../mixins/base'
+  import http from '../../mixins/http'
   import Header from '../../components/header'
 
   export default class pageUserRegisterIdentification extends wepy.page {
+    mixins = [base, http]
     config = {
       navigationBarTitleText: '认证',
       enablePullDownRefresh: true,
@@ -40,6 +44,8 @@
     }
 
     data = {
+      managerMobile: '13700000000',
+      focusManagerMobile: false
     }
 
     computed = {
@@ -64,8 +70,42 @@
     }
 
     methods = {
-      goto(url) {
-        wx.navigateTo({url: url})
+      managerMobileInput(e) {
+        console.log('handle input register manager mobile : ', e.detail.value)
+        this.managerMobile = e.detail.value
+      },
+      managerCheck() {
+        let that = this
+        if (!that.managerMobile) {
+          that.focusManagerMobile = true
+          return false
+        }
+        that.$post({
+          url: service.host,
+          data: {
+            'serverId': {
+              'method': 'validateManagerMobile'
+            },
+            'param': {
+              'mobile': that.managerMobile
+            }
+          }
+        }, {
+          success: (response) => {
+            console.log('handel manager checked', response)
+            if (response.msgcode == 0) {
+              // 注册验证手机号码成功
+              that.$showToast('验证通过', 'success')
+              wx.setStorageSync('managerMobile', that.managerMobile)
+              wx.removeStorageSync('faceImage')
+              wx.removeStorageSync('idCardBack')
+              wx.removeStorageSync('idCardFront')
+              wx.navigateTo({url: 'step3'})
+            }
+          },
+          fail: ({code, data}) => {},
+          complete: () => { this.loaded = false }
+        })
       }
     }
 

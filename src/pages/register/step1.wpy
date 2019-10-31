@@ -61,8 +61,8 @@
     }
 
     data = {
-      registerName: '',
-      registerMobile: '',
+      registerName: '萧蔷',
+      registerMobile: '13788888888',
       focusInputRegisterName: false,
       focusInputRegisterMobile: false
     }
@@ -131,6 +131,12 @@
             if (response.msgcode == 0) {
               // 注册验证手机号码成功
               that.$showToast('验证通过', 'success')
+              try {
+                wx.setStorageSync('userName', that.registerName)
+                wx.setStorageSync('userMobile', that.registerMobile)
+              } catch (e) {
+                console.error(e)
+              }
               wx.navigateTo({url: 'step2'})
             }
           },

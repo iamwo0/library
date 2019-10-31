@@ -1,22 +1,13 @@
 <template>
 <view class="page" xmlns:wx="http://www.w3.org/1999/xhtml">
     <view class="page__bd">
-        <view class="weui-toptips weui-toptips_warn" wx:if="{{showTopTips}}">错误提示</view>
         <view class="weui-cells weui-cells_after-title">
             <view class="weui-cell ">
                 <view class="weui-cell__hd">
                     <view class="weui-label">姓名: </view>
                 </view>
                 <view class="weui-cell__bd">
-                    <input class="weui-input" placeholder="请输入姓名"/>
-                </view>
-            </view>
-            <view class="weui-cell ">
-                <view class="weui-cell__hd">
-                    <view class="weui-label">昵称: </view>
-                </view>
-                <view class="weui-cell__bd">
-                    <input class="weui-input" placeholder="请输入昵称"/>
+                    <input class="weui-input" placeholder="请输入姓名" value="{{ registerUsername }}" focus="{{ focusRegisterUsername }}"  @input="registerUsernameInput"/>
                 </view>
             </view>
             <view class="weui-cell ">
@@ -24,15 +15,7 @@
                     <view class="weui-label">身份证号: </view>
                 </view>
                 <view class="weui-cell__bd">
-                    <input class="weui-input" placeholder="请输入身份证号"/>
-                </view>
-            </view>
-            <view class="weui-cell ">
-                <view class="weui-cell__hd">
-                    <view class="weui-label">年龄(周岁): </view>
-                </view>
-                <view class="weui-cell__bd">
-                    <input class="weui-input" placeholder="请输入年龄"/>
+                    <input class="weui-input" placeholder="请输入身份证号" value="{{ registerUserIdCard }}" focus="{{ focusRegisterUserIdCard }}"  @input="registerUserIdCardInput"/>
                 </view>
             </view>
             <view class="weui-cell ">
@@ -40,7 +23,7 @@
                     <view class="weui-label">登陆密码: </view>
                 </view>
                 <view class="weui-cell__bd">
-                    <input class="weui-input" placeholder="请输入登陆密码"/>
+                    <input class="weui-input" type="password" placeholder="请输入登陆密码" value="{{ registerUserPwd }}" focus="{{ focusRegisterUserPwd }}"  @input="registerUserPwdInput"/>
                 </view>
             </view>
             <view class="weui-cell ">
@@ -48,7 +31,15 @@
                     <view class="weui-label">确认密码: </view>
                 </view>
                 <view class="weui-cell__bd">
-                    <input class="weui-input" placeholder="请确认登陆密码"/>
+                    <input class="weui-input" type="password" placeholder="请确认登陆密码"  value="{{ registerUserPwdConfirm }}" focus="{{ focusRegisterUserPwdConfirm }}"  @input="registerUserPwdConfirmInput"/>
+                </view>
+            </view>
+            <view class="weui-cell ">
+                <view class="weui-cell__hd">
+                    <view class="weui-label">电子邮箱: </view>
+                </view>
+                <view class="weui-cell__bd">
+                    <input class="weui-input" type="email" placeholder="请输入电子邮箱"  value="{{ registerUserEmail }}" focus="{{ focusRegisterUserEmail }}"  @input="registerUserEmailInput"/>
                 </view>
             </view>
             <view class="weui-cell ">
@@ -56,18 +47,18 @@
                     <view class="weui-label">工作单位: </view>
                 </view>
                 <view class="weui-cell__bd">
-                    <input class="weui-input" placeholder="" />
+                    <input class="weui-input" placeholder=""  value="{{ registerUserCompany }}" focus="{{ focusRegisterUserCompany }}"  @input="registerUserCompanyInput"/>
                 </view>
             </view>
             <view class="weui-cell weui-cell_switch">
                 <view class="weui-cell__bd">性别</view>
                 <view class="weui-cell__ft">
                     <span>男</span>
-                    <switch checked ></switch>
+                    <switch @change="genderChange"></switch>
                     <span>女</span>
                 </view>
             </view>
-            <view class="weui-cell weui-cell_select">
+            <!-- <view class="weui-cell weui-cell_select">
                 <view class="weui-cell__hd weui-cell__hd_in-select-after">
                     <view class="weui-label">所属小区: </view>
                 </view>
@@ -76,14 +67,14 @@
                         <view class="weui-select weui-select_in-select-after">{{estates[estateIndex]}}</view>
                     </picker>
                 </view>
-            </view>
+            </view> -->
             <view class="weui-cell weui-cell_select">
                 <view class="weui-cell__hd weui-cell__hd_in-select-after">
                     <view class="weui-label">居住楼栋: </view>
                 </view>
                 <view class="weui-cell__bd">
-                    <picker bindchange="bindCountryChange" value="{{ buildingIndex }}" range="{{ buildings }}">
-                        <view class="weui-select weui-select_in-select-after">{{ buildings[buildingIndex]}}</view>
+                    <picker bindchange="bindBuildingChange" value="{{ buildingIndex }}" range="{{ buildings }}" range-key="name">
+                        <view class="weui-select weui-select_in-select-after">{{ buildings[buildingIndex]['name']}}</view>
                     </picker>
                 </view>
             </view>
@@ -92,7 +83,7 @@
                     <view class="weui-label">居住楼层: </view>
                 </view>
                 <view class="weui-cell__bd">
-                    <picker bindchange="bindCountryChange" value="{{ floorIndex }}" range="{{ floors }}">
+                    <picker bindchange="bindFloorChange" value="{{ floorIndex }}" range="{{ floors }}">
                         <view class="weui-select weui-select_in-select-after">{{ floors[floorIndex]}}</view>
                     </picker>
                 </view>
@@ -102,7 +93,7 @@
                     <view class="weui-label">房间号: </view>
                 </view>
                 <view class="weui-cell__bd">
-                    <picker bindchange="bindCountryChange" value="{{ roomIndex }}" range="{{ rooms }}">
+                    <picker bindchange="bindRoomChange" value="{{ roomIndex }}" range="{{ rooms }}">
                         <view class="weui-select weui-select_in-select-after">{{ rooms[roomIndex]}}</view>
                     </picker>
                 </view>
@@ -116,8 +107,38 @@
                           </view>
                         </view>
                         <view class="weui-uploader__bd">
-                            <view class="weui-uploader__input-box">
-                                <view class="weui-uploader__input" bindtap="chooseImage"></view>
+                            <view wx:if="{{ idCardFront }}" class="weui-uploader__files">
+                                <block>
+                                    <view class="weui-uploader__file" @tap="previewImage" id="{{ idCardFront }}">
+                                        <image class="weui-uploader__img" src="{{ idCardFront }}" mode="aspectFill" />
+                                    </view>
+                                </block>
+                            </view>
+                            <view wx:if="{{ !idCardFront }}" class="weui-uploader__input-box">
+                                <view class="weui-uploader__input" @tap="choose('idCardFront')"></view>
+                            </view>
+                        </view>
+                    </view>
+                </view>
+            </view>
+            <view class="weui-cell">
+                <view class="weui-cell__bd">
+                    <view class="weui-uploader">
+                        <view class="weui-uploader__hd">
+                          <view class="weui-uploader__overview">
+                              <view class="weui-uploader__title">点击选择身份证背面照: </view>
+                          </view>
+                        </view>
+                        <view class="weui-uploader__bd">
+                            <view wx:if="{{ idCardBack }}" class="weui-uploader__files">
+                                <block>
+                                    <view class="weui-uploader__file" @tap="previewImage" id="{{ idCardBack }}">
+                                        <image class="weui-uploader__img" src="{{ idCardBack }}" mode="aspectFill" />
+                                    </view>
+                                </block>
+                            </view>
+                            <view wx:if="{{ !idCardBack }}" class="weui-uploader__input-box">
+                                <view class="weui-uploader__input" @tap="choose('idCardBack')"></view>
                             </view>
                         </view>
                     </view>
@@ -132,8 +153,15 @@
                           </view>
                         </view>
                         <view class="weui-uploader__bd">
-                            <view class="weui-uploader__input-box">
-                                <view class="weui-uploader__input" bindtap="chooseImage"></view>
+                            <view wx:if="{{ faceImage }}" class="weui-uploader__files">
+                                <block>
+                                    <view class="weui-uploader__file" @tap="previewImage" id="{{ faceImage }}">
+                                        <image class="weui-uploader__img" src="{{ faceImage }}" mode="aspectFill" />
+                                    </view>
+                                </block>
+                            </view>
+                            <view wx:if="{{ !faceImage }}" class="weui-uploader__input-box">
+                                <view class="weui-uploader__input" @tap="choose('faceImage')"></view>
                             </view>
                         </view>
                     </view>
@@ -141,7 +169,7 @@
             </view>
         </view>
         <view class="weui-btn-area">
-            <button class="weui-btn submit-btn" type="primary" bindtap="showTopTips" @tap="goto('login')">确定</button>
+            <button class="weui-btn submit-btn" type="primary" @tap="submitForm()">确定</button>
         </view>
     </view>
 </view>
@@ -149,8 +177,14 @@
 
 <script>
   import wepy from 'wepy'
+  import { service } from '../../config.js'
+  import base from '../../mixins/base'
+  import http from '../../mixins/http'
+  const uploadImage = require('../../utils/uploadFile.js')
+  const util = require('../../utils/util.js')
 
   export default class pageUserRegisterInformation extends wepy.page {
+    mixins = [base, http]
     config = {
       navigationBarTitleText: '基本信息',
       enablePullDownRefresh: true,
@@ -161,14 +195,33 @@
     }
 
     data = {
-      estates: ['恒大绿洲', '保利.金香槟', '金陵半岛'],
-      estateIndex: 0,
-      buildings: ['一栋', '二栋', '三栋', '四栋'],
-      buildingIndex: 2,
-      floors: ['1层', '2层', '3层', '4层', '5层', '6层', '7层', '8层', '9层', '10层', '11层', '12层'],
-      floorIndex: 8,
-      rooms: ['102', '202', '301', '401', '503', '801', '1002'],
-      roomIndex: 6
+      showTopTips: true,
+      estates: ['恒大绿洲'],
+      estateIndex: null,
+      buildings: [],
+      buildingIndex: null,
+      floors: [],
+      floorIndex: null,
+      rooms: [],
+      roomIndex: null,
+      activeBuilding: null,
+      registerUsername: '',
+      focusRegisterUsername: false,
+      registerUserIdCard: '',
+      focusRegisterUserIdCard: false,
+      registerUserPwd: '',
+      focusRegisterUserPwd: false,
+      registerUserPwdConfirm: '',
+      focusRegisterUserPwdConfirm: false,
+      registerUserEmail: '',
+      focusRegisterUserEmail: false,
+      registerUserCompany: '',
+      focusRegisterUserCompany: false,
+      registerGender: false,  // false: male, true: female
+      faceImage: '',
+      idCardBack: '',
+      idCardFront: '',
+      userMobile: ''
     }
 
     computed = {
@@ -176,25 +229,248 @@
 
     onShow() {
       // 初始化页面数据
+      this.faceImage = wx.getStorageSync('faceImage')
+      this.idCardBack = wx.getStorageSync('idCardBack')
+      this.idCardFront = wx.getStorageSync('idCardFront')
     }
+
+    onHide() {
+      this.faceImage = wx.getStorageSync('faceImage')
+      this.idCardBack = wx.getStorageSync('idCardBack')
+      this.idCardFront = wx.getStorageSync('idCardFront')
+    }
+
     onShareAppMessage(res) {
+
     }
 
     onLoad() {
-
-    }
-
-    onPullDownRefresh() {
       this.initPageData()
     }
 
     // 初始化页面数据
     initPageData() {
+      let that = this
+      let userName = wx.getStorageSync('userName')
+      let userMobile = wx.getStorageSync('userMobile')
+      that.userMobile = userMobile
+      that.$post({
+        url: service.host,
+        data: {
+          'serverId': {
+            'method': 'getBuildings'
+          },
+          'param': {
+            'name': userName,
+            'mobile': userMobile
+          }
+        }
+      }, {
+        success: (result) => {
+          if (result.msgcode == 0) {
+            console.log('XXXXXXX', result.response)
+            that.buildings = result.response.buildings
+          }
+        },
+        fail: ({code, data}) => {},
+        complete: () => { this.loaded = false }
+      })
     }
 
     methods = {
       goto(url) {
         wx.navigateTo({url: url})
+      },
+
+      showRooms(rooms) {
+        this.rooms = rooms
+      },
+
+      registerUsernameInput(e) {
+        console.log('handle input register name: ', e.detail.value)
+        this.registerUsername = e.detail.value
+      },
+
+      registerUserIdCardInput(e) {
+        console.log('handle input register id card NO.: ', e.detail.value)
+        this.registerUserIdCard = e.detail.value
+      },
+
+      registerUserPwdInput(e) {
+        console.log('handle input register password: ', e.detail.value)
+        this.registerUserPwd = e.detail.value
+      },
+
+      registerUserPwdConfirmInput(e) {
+        console.log('handle input register password confirm: ', e.detail.value)
+        this.registerUserPwdConfirm = e.detail.value
+      },
+
+      registerUserEmailInput(e) {
+        console.log('handle input register e-mail: ', e.detail.value)
+        this.registerUserEmail = e.detail.value
+      },
+
+      registerUserCompanyInput(e) {
+        console.log('handle input register company info: ', e.detail.value)
+        this.registerUserCompany = e.detail.value
+      },
+
+      genderChange(e) {
+        console.log('handle switch register gender: ', e.detail.value)
+        this.registerGender = e.detail.value
+      },
+
+      bindBuildingChange(e) {
+        console.log('handle buildings pick change: ', e.detail.value)
+        let that = this
+        that.buildingIndex = e.detail.value
+        let activeBuilding = that.buildings[this.buildingIndex]
+        that.activeBuilding = activeBuilding
+        let floors = []
+        for (let index = 1; index <= that.activeBuilding.floorNum; index++) {
+          floors.push(index)
+        }
+        that.floors = floors
+        that.floorIndex = null
+        that.roomIndex = null
+      },
+
+      bindFloorChange(e) {
+        console.log('handle floor pick change: ', e.detail.value)
+        let that = this
+        that.floorIndex = e.detail.value
+        let rooms = []
+        for (let index = 1; index <= that.activeBuilding.houseNum; index++) {
+          rooms.push(index)
+        }
+        that.rooms = rooms
+        that.roomIndex = null
+      },
+
+      bindRoomChange(e) {
+        console.log('handle room pick change: ', e.detail.value)
+        let that = this
+        that.roomIndex = e.detail.value
+      },
+
+      previewImage(e) {
+        wx.previewImage({
+          current: e.currentTarget.id, // 当前显示图片的http链接
+          urls: [e.currentTarget.id] // 需要预览的图片http链接列表
+        })
+      },
+
+      choose(imageType) {
+        let that = this
+        wx.chooseImage({
+          count: 1, // 这里默认选择一张
+          sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+          sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+          success: function (res) {
+            var nowTime = util.formatTime(new Date())
+            // 支持多图上传
+            for (var i = 0; i < res.tempFilePaths.length; i++) {
+              // 显示消息提示框
+              wx.showLoading({
+                title: '上传中' + (i + 1) + '/' + res.tempFilePaths.length,
+                mask: true
+              })
+              uploadImage(res.tempFilePaths[i], 'fm/' + nowTime + '/',
+                  function (result) {
+                    console.log('======上传成功图片地址为：', result)
+                    try {
+                      if (imageType == 'faceImage') {
+                        that.setData({
+                          faceImage: result
+                        })
+                      } else if (imageType == 'idCardBack') {
+                        that.setData({
+                          idCardBack: result
+                        })
+                      } else if (imageType == 'idCardFront') {
+                        that.setData({
+                          idCardFront: result
+                        })
+                      }
+                      wx.setStorageSync(imageType, result)
+                    } catch (e) {
+                      console.error(e)
+                    }
+                    wx.hideLoading()
+                  }, function (result) {
+                    console.log('======上传失败======', result)
+                    wx.hideLoading()
+                  }
+              )
+            }
+          }
+        })
+      },
+      submitForm() {
+        let that = this
+        if (!that.registerUsername) {
+          that.focusRegisterUsername = true
+          return false
+        }
+        if (!that.registerUserIdCard) {
+          that.focusRegisterUserIdCard = true
+          return false
+        }
+        if (!that.registerUserPwd) {
+          that.focusRegisterUserPwd = true
+          return false
+        }
+        if (!that.registerUserPwdConfirm || that.registerUserPwd != that.registerUserPwdConfirm) {
+          that.focusRegisterUserPwdConfirm = true
+          return false
+        }
+        if (!that.registerUserEmail) {
+          that.focusRegisterUserEmail = true
+          return false
+        }
+        if (!that.registerUserCompany) {
+          that.focusRegisterUserCompany = true
+          return false
+        }
+        let params = {
+          'username': '',
+          'type': 4,
+          'name': that.registerUsername,
+          'appUsername': '',
+          'appPwd': that.registerUserPwd,
+          'idCard': that.registerUserIdCard,
+          'mobile': that.userMobile,
+          'buildingId': that.activeBuilding.id,
+          'buildingFloor': (parseInt(that.floorIndex) + 1),
+          'buildingHouse': (parseInt(that.roomIndex) + 1),
+          'faceImg': that.faceImage,
+          'idCardFrontImg': that.idCardFront,
+          'idCardReverseImg': that.idCardBack,
+          'email': that.registerUserEmail,
+          'company': that.registerUserCompany,
+          'gender': (that.registerGender ? 0 : 1)
+        }
+        console.log('egisterUserInfo: ', params)
+        return false
+        that.$post({
+          url: service.host,
+          data: {
+            'serverId': {
+              'method': 'addMember'
+            },
+            'param': params
+          }
+        }, {
+          success: (response) => {
+            console.log('handel register save info: ', response)
+            if (response.msgcode == 0) {
+              that.goto('/pages/user/login')
+            }
+          },
+          fail: ({code, data}) => {},
+          complete: () => { this.loaded = false }
+        })
       }
     }
 
