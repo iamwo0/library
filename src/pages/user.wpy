@@ -41,54 +41,102 @@
       HeaderContainer: Header
     }
     data = {
-      iconList: [
-        {
-          icon: 'http://119.3.220.213/images/zhsq/icons/users.png',
-          title: '用户管理',
-          link: '/pages/user/manage',
-          type: 'nav'
-        },
-        {
-          icon: 'http://119.3.220.213/images/zhsq/icons/question-mark.png',
-          title: '房屋报修',
-          link: '/pages/house/maintenance',
-          type: 'nav'
-        },
-        {
-          icon: 'http://119.3.220.213/images/zhsq/icons/feedbacks.png',
-          title: '我的反馈',
-          link: '/pages/feedback/list',
-          type: 'nav'
-        },
-        {
-          icon: 'http://119.3.220.213/images/zhsq/icons/suggestions.png',
-          title: '意见反馈',
-          link: '/pages/feedback/add',
-          type: 'nav'
-        },
-        {
-          icon: 'http://119.3.220.213/images/zhsq/icons/settings.png',
-          title: '设置',
-          link: '/pages/setting/index',
-          type: 'nav'
-        },
-        {
-          icon: 'http://119.3.220.213/images/zhsq/icons/blue-plus.png',
-          title: '添加成员',
-          link: '/pages/member/add',
-          type: 'nav'
-        },
-        {
-          icon: 'http://119.3.220.213/images/zhsq/icons/prepare-report.png',
-          title: '我的成员',
-          link: '/pages/member/list',
-          type: 'nav'
-        }
-      ]
+      iconList: []
     }
     onShow() {
     }
     onLoad() {
+      this.initMenu()
+    }
+    initMenu() {
+      let role = wx.getStorageSync('role')
+      let menus = []
+      if (role == '1' || role == '3') {
+        // 片区主管/分管
+        menus = [
+          {
+            icon: 'http://119.3.220.213/images/zhsq/icons/users.png',
+            title: '用户管理',
+            link: '/pages/user/manage',
+            type: 'nav'
+          },
+          {
+            icon: 'http://119.3.220.213/images/zhsq/icons/question-mark.png',
+            title: '房屋报修',
+            link: '/pages/house/maintenance',
+            type: 'nav'
+          },
+          {
+            icon: 'http://119.3.220.213/images/zhsq/icons/suggestions.png',
+            title: '意见反馈',
+            link: '/pages/feedback/add',
+            type: 'nav'
+          },
+          {
+            icon: 'http://119.3.220.213/images/zhsq/icons/settings.png',
+            title: '设置',
+            link: '/pages/setting/index',
+            type: 'nav'
+          }
+        ]
+      } else if (role == '4') {
+        // 业主
+        menus = [
+          {
+            icon: 'http://119.3.220.213/images/zhsq/icons/question-mark.png',
+            title: '房屋报修',
+            link: '/pages/house/maintenance',
+            type: 'nav'
+          },
+          {
+            icon: 'http://119.3.220.213/images/zhsq/icons/suggestions.png',
+            title: '意见反馈',
+            link: '/pages/feedback/add',
+            type: 'nav'
+          },
+          {
+            icon: 'http://119.3.220.213/images/zhsq/icons/settings.png',
+            title: '设置',
+            link: '/pages/setting/index',
+            type: 'nav'
+          },
+          {
+            icon: 'http://119.3.220.213/images/zhsq/icons/blue-plus.png',
+            title: '添加成员',
+            link: '/pages/member/add',
+            type: 'nav'
+          },
+          {
+            icon: 'http://119.3.220.213/images/zhsq/icons/prepare-report.png',
+            title: '我的成员',
+            link: '/pages/member/list',
+            type: 'nav'
+          }
+        ]
+      } else if (role == '7') {
+        // 物业人员
+        menus = [
+          {
+            icon: 'http://119.3.220.213/images/zhsq/icons/question-mark.png',
+            title: '房屋报修',
+            link: '/pages/house/maintenance',
+            type: 'nav'
+          },
+          {
+            icon: 'http://119.3.220.213/images/zhsq/icons/suggestions.png',
+            title: '意见反馈',
+            link: '/pages/feedback/add',
+            type: 'nav'
+          },
+          {
+            icon: 'http://119.3.220.213/images/zhsq/icons/settings.png',
+            title: '设置',
+            link: '/pages/setting/index',
+            type: 'nav'
+          }
+        ]
+      }
+      this.iconList = menus
     }
     methods = {
       goto(url, type) {

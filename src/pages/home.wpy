@@ -69,12 +69,6 @@
           title: '联系物业',
           link: '/pages/feedback/mine',
           type: 'nav'
-        },
-        {
-          icon: 'http://119.3.220.213/images/zhsq/icons/notebook.png',
-          title: '开门记录',
-          link: '/pages/door/record',
-          type: 'nav'
         }
       ],
       page: 1,
@@ -88,6 +82,7 @@
     onShow() {
     }
     onLoad() {
+      this.initMenu()
       this.initPageData()
     }
     getCommunityNotices() {
@@ -115,6 +110,19 @@
         fail: ({code, data}) => {},
         complete: () => { this.loaded = false }
       })
+    }
+    initMenu() {
+      let role = wx.getStorageSync('role')
+      if (role == '4') {
+        // role为4的是业主, 业主多一项开门记录
+        let record = {
+          icon: 'http://119.3.220.213/images/zhsq/icons/notebook.png',
+          title: '开门记录',
+          link: '/pages/door/record',
+          type: 'nav'
+        }
+        this.iconList.push(record)
+      }
     }
     initPageData() {
       this.getCommunityNotices()

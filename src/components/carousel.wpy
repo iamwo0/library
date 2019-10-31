@@ -1,7 +1,7 @@
 <template>
 <view class="container home-swiper">
   <swiper indicator-dots="{{ indicatorDots }}" class="carousel-swiper" autoplay="{{autoplay}}" interval="{{interval}}" duration="{{ duration }}" easing-function="{{ easing }}">
-  <block wx:for="{{ advertise }}ments}}" wx:key="index">
+  <block wx:for="{{ advertisements }}" wx:key="index">
     <swiper-item>
       <image src="{{ item.img }}" class="slide-image" width="355" height="150"/>
     </swiper-item>
@@ -28,24 +28,24 @@
       easing: 'easeInOutCubic',
       advertisements: [{
         'name': '三元banner广告',
-        'img' : 'http://119.3.220.213/images/zhsq/home/city1.jpeg',
-        'link' : 'http://www.sanyuan.com.cn',
-        'description' : '匠心智造，妈妈放心 '
+        'img': 'http://119.3.220.213/images/zhsq/home/city1.jpeg',
+        'link': 'http://www.sanyuan.com.cn',
+        'description': '匠心智造，妈妈放心 '
       }, {
         'name': '三元banner广告',
-        'img' : 'http://119.3.220.213/images/zhsq/home/city2.jpeg',
-        'link' : 'http://www.sanyuan.com.cn',
-        'description' : '匠心智造，妈妈放心 '
+        'img': 'http://119.3.220.213/images/zhsq/home/city2.jpeg',
+        'link': 'http://www.sanyuan.com.cn',
+        'description': '匠心智造，妈妈放心 '
       }, {
         'name': '三元banner广告',
-        'img' : 'http://119.3.220.213/images/zhsq/home/city3.jpeg',
-        'link' : 'http://www.sanyuan.com.cn',
-        'description' : '匠心智造，妈妈放心 '
+        'img': 'http://119.3.220.213/images/zhsq/home/city3.jpeg',
+        'link': 'http://www.sanyuan.com.cn',
+        'description': '匠心智造，妈妈放心 '
       }, {
         'name': '三元banner广告',
-        'img' : 'http://119.3.220.213/images/zhsq/home/city4.jpeg',
-        'link' : 'http://www.sanyuan.com.cn',
-        'description' : '匠心智造，妈妈放心 '
+        'img': 'http://119.3.220.213/images/zhsq/home/city4.jpeg',
+        'link': 'http://www.sanyuan.com.cn',
+        'description': '匠心智造，妈妈放心 '
       }]
     }
     onLoad() {
