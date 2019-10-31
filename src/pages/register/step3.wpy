@@ -434,10 +434,10 @@
           return false
         }
         let params = {
-          'username': '',
+          'username': '',  // ????
           'type': 4,
-          'name': that.registerUsername,
-          'appUsername': '',
+          'name': that.registerUsername, // ????
+          'appUsername': that.registerUsername, // ????
           'appPwd': that.registerUserPwd,
           'idCard': that.registerUserIdCard,
           'mobile': that.userMobile,
@@ -452,7 +452,6 @@
           'gender': (that.registerGender ? 0 : 1)
         }
         console.log('egisterUserInfo: ', params)
-        return false
         that.$post({
           url: service.host,
           data: {

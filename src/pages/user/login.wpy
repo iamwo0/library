@@ -9,10 +9,10 @@
     <view class="sign-form">
       <form bindsubmit="formSubmit" bindreset="formReset">
         <view class="section">
-          <input name="input" type="number" maxlength="11" placeholder="请输入手机号" value="{{loginMobile}}" focus="{{focusInputUser}}" @input="loginMobileInput"/>
+          <input name="input" type="number" maxlength="11" placeholder="请输入用户名" value="{{loginUsername}}" focus="{{focusInputUser}}" @input="loginUsernameInput"/>
         </view>
         <view class="section">
-          <input name="input" type="password" placeholder="请输入密码" />
+          <input name="input" type="password" placeholder="请输入密码" value="{{loginPwd}}" focus="{{focusInputPwd}}" @input="loginPwdInput"/>
         </view>
         <view class="pwd-forget text-right">
           <small @tap="goto('/pages/password/forget')">忘记密码 ?</small>
@@ -28,11 +28,13 @@
 
 <script>
   import wepy from 'wepy'
+  import { service } from '../../config.js'
   import base from '../../mixins/base'
+  import http from '../../mixins/http'
   import Header from '../../components/header'
 
   export default class pageUserLogin extends wepy.page {
-    mixins = [base]
+    mixins = [base, http]
     config = {
       navigationBarTitleText: '登陆',
       enablePullDownRefresh: true,
@@ -44,7 +46,7 @@
     }
 
     data = {
-      loginMobile: '',
+      loginUsername: '',
       loginPwd: '',
       focusInputUser: false,
       focusInputPwd: false
@@ -65,19 +67,55 @@
     }
 
     methods = {
-      loginMobileInput (e) {
-        this.loginMobile = e.detail.value
-        console.log(this.loginMobile)
+      loginUsernameInput (e) {
+        this.loginUsername = e.detail.value
+        console.log(this.loginUsername)
+      },
+
+      loginPwdInput (e) {
+        this.loginPwd = e.detail.value
+        console.log(this.loginPwd)
       },
 
       submitLogin() {
-        var that = this
-        console.log('will login by user: ', that.loginMobile, '!!!!')
-        if (!that.loginMobile.length) {
-          this.$showToast('请输入手机号码')
+        let that = this
+        console.log('will login by user: ', that.loginUsername, '!!!!')
+        if (!that.loginUsername.length) {
+          that.$showToast('请输入用户名')
           that.focusInputUser = true
           return false
         }
+        if (!that.loginPwd.length) {
+          that.$showToast('请输入密码')
+          that.focusInputPwd = true
+          return false
+        }
+        that.$post({
+          url: service.host,
+          data: {
+            'serverId': {
+              'method': 'login'
+            },
+            'param': {
+              'name': that.loginUsername,
+              'mobile': that.loginPwd
+            }
+          }
+        }, {
+          success: (response) => {
+            console.log('handel login response: ', response)
+            if (response.msgcode == 0) {
+              // 注册验证手机号码成功
+              that.$showToast('登录成功', 'success')
+              try {
+              } catch (e) {
+                console.error(e)
+              }
+            }
+          },
+          fail: ({code, data}) => {},
+          complete: () => { this.loaded = false }
+        })
       }
     }
 

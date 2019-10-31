@@ -10,12 +10,22 @@
         <view class="clearfloat"></view>
       </view>
       <view class="bc_recommend">
-        <view class="title font_32">
-          公告信息
-          <span class="flo_r font_26" @tap="goto('/pages/notice/list')">
-            查看更多
-            <image src="http://119.3.220.213/images/zhsq/icons/more-gray.png" mode="aspectFit" style="width: 22rpx;height: 22rpx;margin-left: -6rpx;"/>
-          </span>
+        <view class="weui-panel weui-panel_access">
+          <view class="weui-cells weui-cells_after-title">
+              <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+                  <view class="weui-cell__bd">公告信息</view>
+                  <view class="weui-cell__ft weui-cell__ft_in-access">查看更多</view>
+              </navigator>
+          </view>
+          <view class="weui-panel__bd">
+            <view class="weui-media-box weui-media-box_text"  wx:for="{{communityNotices}}" wx:key="*this">
+              <view class="weui-media-box__title weui-media-box__title_in-text">{{ item.title }}</view>
+              <view class="weui-media-box__desc">{{item.content}}</view>
+              <view class="weui-media-box__info">
+                <view class="weui-media-box__info__meta right-block">{{item.createDate}}</view>
+              </view>
+            </view>
+          </view>
         </view>
       </view>
     </view>
@@ -24,11 +34,13 @@
 
 <script>
   import wepy from 'wepy'
+  import { service } from '../config.js'
   import base from '../mixins/base'
+  import http from '../mixins/http'
   import Carsouel from '../components/carousel'
 
   export default class pageQr extends wepy.page {
-    mixins = [base]
+    mixins = [base, http]
     config = {
       navigationBarTitleText: '首页',
       navigationBarBackgroundColor: '#005b9e',
@@ -64,11 +76,48 @@
           link: '/pages/door/record',
           type: 'nav'
         }
-      ]
+      ],
+      page: 1,
+      pageSize: 10,
+      communityNotices: [{
+        'title': '今天停水',
+        'content': '由于市政自来水公司施工，特停水一天！',
+        'createDate': '2019-10-20 10:00:00'
+      }]
     }
     onShow() {
     }
     onLoad() {
+      this.initPageData()
+    }
+    getCommunityNotices() {
+      let that = this
+      let userName = wx.getStorageSync('userName')
+      that.$post({
+        url: service.host,
+        data: {
+          'serverId': {
+            'method': 'getCommunityNotices'
+          },
+          'param': {
+            'name': userName,
+            'page': that.page,
+            'pageSize': that.pageSize
+          }
+        }
+      }, {
+        success: (result) => {
+          if (result.msgcode == 0) {
+            console.log('get community notices: ', result.response)
+            that.communityNotices = result.response.communityNotices
+          }
+        },
+        fail: ({code, data}) => {},
+        complete: () => { this.loaded = false }
+      })
+    }
+    initPageData() {
+      this.getCommunityNotices()
     }
     methods = {
       // goto(url, type) {
@@ -172,6 +221,9 @@
           font-size: .8rem;
         }
       }
+    }
+    .right-block {
+      float: right;
     }
   }
 </style>
