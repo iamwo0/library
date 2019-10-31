@@ -1,10 +1,10 @@
 <template>
   <view class="_home">
     <HeaderContainer></HeaderContainer>
-    <view class="status-container" @tap="goto('user/profile')">
+    <view class="status-container" @tap="goto('user/profile')" wx:if="{{ currentUser }}">
       <view class="sign-status">
-        <button open-type="getUserInfo" class="get-userinfo-btn">
-          <view class="authed-user">小高</view>
+        <button class="get-userinfo-btn">
+          <view class="authed-user">{{ currentUser.name }}</view>
           <view class="authed-status">已授权</view>
         </button>
       </view>
@@ -45,13 +45,13 @@
       HeaderContainer: Header
     }
     data = {
-      iconList: []
+      iconList: [],
+      currentUser: null
     }
     onShow() {
     }
     onLoad() {
       this.authChecked()
-      this.initMenu()
     }
     authChecked() {
       let that = this
@@ -60,7 +60,14 @@
         that.$showToast('请先登录', 'loading', 1200, function() {
           wx.navigateTo({url: '/pages/user/login'})
         })
+      } else {
+        that.initPageData()
       }
+    }
+    initPageData() {
+      let activieUser = wx.getStorageSync('token')
+      this.currentUser = activieUser
+      this.initMenu()
     }
     initMenu() {
       let role = wx.getStorageSync('role')

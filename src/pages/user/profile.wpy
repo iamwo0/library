@@ -10,19 +10,19 @@
         <view class="weui-cells weui-cells_after-title">
             <view class="weui-cell">
                 <view class="weui-cell__bd">昵称</view>
-                <view class="weui-cell__ft">{{ user.nickname }}</view>
+                <view class="weui-cell__ft">{{ user.name }}</view>
             </view>
         </view>
         <view class="weui-cells weui-cells_after-title">
             <view class="weui-cell">
                 <view class="weui-cell__bd">片区信息</view>
-                <view class="weui-cell__ft">{{ user.area }}</view>
+                <view class="weui-cell__ft">{{ user.communityName }}</view>
             </view>
         </view>
         <view class="weui-cells weui-cells_after-title">
             <view class="weui-cell">
                 <view class="weui-cell__bd">住房信息</view>
-                <view class="weui-cell__ft">小区住户特有信息</view>
+                <view class="weui-cell__ft">{{ stayType }}</view>
             </view>
         </view>
         <view class="weui-cells weui-cells_after-title">
@@ -54,7 +54,8 @@
         nickname: '小小高',
         area: '保利.金香槟',
         authed: true
-      }
+      },
+      stayType: '业主'
     }
 
     computed = {
@@ -64,21 +65,36 @@
     }
 
     onLoad() {
-
+      this.initPageData()
     }
 
     onPullDownRefresh() {
       this.initPageData()
     }
 
+    getProfile() {
+      let that = this
+      let user = wx.getStorageSync('token') || null
+      if (user) {
+        that.user = user
+      }
+      if (user.role == 1) {
+        that.stayType = '片区主管'
+      } else if (user.role == 3) {
+        that.stayType = '表片区公管'
+      } else if (user.role == 4) {
+        that.stayType = '业主'
+      } else if (user.role == 7) {
+        that.stayType = '物业人员'
+      }
+    }
+
     // 初始化页面数据
     initPageData() {
+      this.getProfile()
     }
 
     methods = {
-      goto(url) {
-        wx.navigateTo({url: url})
-      }
     }
 
     components = {
