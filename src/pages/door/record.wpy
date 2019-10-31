@@ -1,24 +1,16 @@
 <template>
   <view class="page-feedback">
     <view class="weui-cells weui-cells_after-title">
-      <view class="weui-cell weui-cell_example ">
+      <view class="weui-cell weui-cell_example"  wx:for="{{ records }}" wx:key="*this">
           <view class="weui-cell__hd">
               <image src="{{ icon }}" style="margin-right: 16px;vertical-align: middle;width:20px; height: 20px;"/>
           </view>
-          <view class="weui-cell__bd">天虹西门</view>
+          <view class="weui-cell__bd">{{ item.entranceGuardName }}</view>
           <view class="weui-cell__ft">
-            <view class="door-ctl-time-item">进门: 2019-08-08 12:33</view>
-            <view class="door-ctl-time-item">出门: 2019-08-08 12:52</view>
-          </view>
-      </view>
-      <view class="weui-cell weui-cell_example ">
-          <view class="weui-cell__hd">
-              <image src="{{ icon }}" style="margin-right: 16px;vertical-align: middle;width:20px; height: 20px;"/>
-          </view>
-          <view class="weui-cell__bd">天虹北门</view>
-          <view class="weui-cell__ft">
-            <view class="door-ctl-time-item">进门: 2019-08-08 12:33</view>
-            <view class="door-ctl-time-item">出门: 2019-08-08 12:52</view>
+            <view class="door-ctl-time-item" wx:if="{{ item.openDoorType == 2 }}">密码开门</view>
+            <view class="door-ctl-time-item" wx:if="{{ item.openDoorType == 5 }}">人脸开门</view>
+            <view class="door-ctl-time-item" wx:if="{{ item.entranceGuardDirection == 1 }}">进门: {{ item.createDate }}</view>
+            <view class="door-ctl-time-item" wx:if="{{ item.entranceGuardDirection == 0 }}">出门: {{ item.createDate }}</view>
           </view>
       </view>
     </view>
@@ -27,8 +19,12 @@
 
 <script>
   import wepy from 'wepy'
+  import { service } from '../../config.js'
+  import base from '../../mixins/base'
+  import http from '../../mixins/http'
 
   export default class pageDoorRecord extends wepy.page {
+    mixins = [base, http]
     config = {
       navigationBarTitleText: '开门记录',
       enablePullDownRefresh: true,
@@ -39,7 +35,22 @@
     }
 
     data = {
-      icon: 'http://119.3.220.213/images/zhsq/icons/notebook2.png'
+      icon: 'http://119.3.220.213/images/zhsq/icons/notebook2.png',
+      records: [{
+        'entranceGuardNo': '0001',
+        'entranceGuardName': '北区大门',
+        'entranceGuardDirection': 0,
+        'openDoorType': 5,
+        'createDate': '2019-10-20 10:00:00'
+      }, {
+        'entranceGuardNo': '0002',
+        'entranceGuardName': '东区大门',
+        'entranceGuardDirection': 1,
+        'openDoorType': 2,
+        'createDate': '2019-10-20 10:00:00'
+      }],
+      page: 1,
+      pageSize: 10
     }
 
     computed = {
@@ -48,19 +59,46 @@
     onShow() {
       // 初始化页面数据
     }
-    onShareAppMessage(res) {
-    }
 
     onLoad() {
-
+      this.initPageData()
     }
 
     onPullDownRefresh() {
+      this.page += 1
       this.initPageData()
     }
 
     // 初始化页面数据
     initPageData() {
+      this.getRecords()
+    }
+
+    getRecords() {
+      let that = this
+      let userName = wx.getStorageSync('userName')
+      that.$post({
+        url: service.host,
+        data: {
+          'serverId': {
+            'method': 'getDoorRecords'
+          },
+          'param': {
+            'name': userName,
+            'page': that.page,
+            'pageSize': that.pageSize
+          }
+        }
+      }, {
+        success: (result) => {
+          if (result.msgcode == 0) {
+            console.log('get open door records: ', result.response)
+            that.records = that.records.concat(result.response.doorRecords)
+          }
+        },
+        fail: ({code, data}) => {},
+        complete: () => { this.loaded = false }
+      })
     }
 
     methods = {

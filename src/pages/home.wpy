@@ -18,7 +18,7 @@
               </navigator>
           </view>
           <view class="weui-panel__bd">
-            <view class="weui-media-box weui-media-box_text" wx:for="{{communityNotices}}" wx:key="*this">
+            <view class="weui-media-box weui-media-box_text" wx:for="{{ communityNotices }}" wx:key="*this">
               <view class="weui-media-box__title weui-media-box__title_in-text">{{ item.title }}</view>
               <view class="weui-media-box__desc">{{item.content}}</view>
               <view class="weui-media-box__info">
@@ -67,7 +67,7 @@
         {
           icon: 'http://119.3.220.213/images/zhsq/icons/phone.png',
           title: '联系物业',
-          link: '/pages/feedback/mine',
+          link: 'contactHouseProperty',
           type: 'nav'
         }
       ],
@@ -77,7 +77,12 @@
         'title': '今天停水',
         'content': '由于市政自来水公司施工，特停水一天！',
         'createDate': '2019-10-20 10:00:00'
-      }]
+      }],
+      houseProperty: {
+        'name': '北京万科物业管理有限公司',
+        'contactName': '由于市政自来水公司施工，特停水一天！',
+        'contactMobile': '010-90890909'
+      }
     }
     onShow() {
     }
@@ -127,8 +132,8 @@
       }, {
         success: (result) => {
           if (result.msgcode == 0) {
-            console.log('get community notices: ', result.response)
-            that.communityNotices = result.response.communityNotices
+            console.log('get house property: ', result.response)
+            that.houseProperty = result.response
           }
         },
         fail: ({code, data}) => {},
@@ -152,9 +157,18 @@
       this.getCommunityNotices()
     }
     methods = {
-      // goto(url, type) {
-      //   console.log('goto in pages')
-      // }
+      goto(url, type) {
+        let that = this
+        console.log('goto in pages', url, type)
+        if (url == 'contactHouseProperty') {
+          if (that.houseProperty && that.houseProperty.contactMobile) {
+            wx.makePhoneCall({
+              phoneNumber: that.houseProperty.contactMobile
+            })
+          }
+          return false
+        }
+      }
     }
   }
 </script>

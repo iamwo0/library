@@ -128,8 +128,7 @@ export default class baseMixin extends wepy.mixin {
 
   urlWithoutAuthCheck(url) {
     var withoutAuth = false
-    withoutAuth = url.indexOf('login') > -1
-    withoutAuth = url.indexOf('register') > -1
+    withoutAuth = (url.indexOf('login') > -1) || (url.indexOf('register') > -1) || (url.indexOf('contactHouseProperty') > -1)
     console.log('check url is need auth', url, withoutAuth)
     return withoutAuth
   }
@@ -138,6 +137,9 @@ export default class baseMixin extends wepy.mixin {
   methods = {
     goto(url, type) {
       var that = this
+      if (url.indexOf('contactHouseProperty') > -1) {
+        return false
+      }
       var withoutAuth = false
       withoutAuth = that.urlWithoutAuthCheck(url)
       try {

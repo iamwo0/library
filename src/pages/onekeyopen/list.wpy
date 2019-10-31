@@ -102,7 +102,7 @@
         url: service.host,
         data: {
           'serverId': {
-            'method': 'getEntranceGuards'
+            'method': 'nowUnlock'
           },
           'param': {
             'username': userName,
