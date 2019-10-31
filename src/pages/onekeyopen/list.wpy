@@ -1,22 +1,14 @@
 <template>
   <view class="page-tempkeys">
     <view class="weui-cells weui-cells_after-title">
-      <view class="weui-cell weui-cell_example" @tap="openDoor()">
+      <view class="weui-cell weui-cell_example" wx:for="{{ tempKeys }}" wx:key="*this">
           <view class="weui-cell__hd">
               <image src="{{ icon }}" style="margin-right: 16px;vertical-align: middle;width:20px; height: 20px;"/>
           </view>
-          <view class="weui-cell__bd">保利.金香槟2号楼3单元</view>
+          <view class="weui-cell__bd">{{ item.name }}</view>
           <view class="weui-cell__ft">
-            <button class="weui-btn mini-btn" type="default" size="mini">一键开锁</button>
-          </view>
-      </view>
-      <view class="weui-cell weui-cell_example" @tap="openDoor()">
-          <view class="weui-cell__hd">
-              <image src="{{ icon }}" style="margin-right: 16px;vertical-align: middle;width:20px; height: 20px;"/>
-          </view>
-          <view class="weui-cell__bd">恒大绿洲西2门</view>
-          <view class="weui-cell__ft">
-            <button class="weui-btn mini-btn" type="default" size="mini">一键开锁</button>
+            <button class="weui-btn mini-btn" type="primary" size="mini" wx:if="{{ item.onlineStatus }}" @tap="openDoor({{ item }})">一键开锁</button>
+            <view class="weui-cell__ft" wx:if="{{ !item.onlineStatus }}">设备离线</view>
           </view>
       </view>
     </view>
@@ -25,8 +17,12 @@
 
 <script>
   import wepy from 'wepy'
+  import { service } from '../../config.js'
+  import base from '../../mixins/base'
+  import http from '../../mixins/http'
 
   export default class pageTempKeys extends wepy.page {
+    mixins = [base, http]
     config = {
       navigationBarTitleText: '一键开锁',
       enablePullDownRefresh: true,
@@ -37,7 +33,22 @@
     }
 
     data = {
-      icon: 'http://119.3.220.213/images/zhsq/icons/keys.png'
+      icon: 'http://119.3.220.213/images/zhsq/icons/keys.png',
+      tempKeys: [{
+        'name': '小区大门门禁',
+        'code': 'd001',
+        'onlineStatus': true,
+        'tempPwd': '123456',
+        'validStartDate': '2019-10-10 10:00:00',
+        'validEndDate': '2019-10-10 12:00:00'
+      }, {
+        'name': '小区东门',
+        'code': 'd002',
+        'onlineStatus': false,
+        'tempPwd': '123456',
+        'validStartDate': '2019-10-10 10:00:00',
+        'validEndDate': '2019-10-10 12:00:00'
+      }]
     }
 
     computed = {
@@ -47,7 +58,32 @@
     }
 
     onLoad() {
+      this.initPageData()
+    }
 
+    getTempKeys() {
+      let that = this
+      let userName = wx.getStorageSync('userName')
+      that.$post({
+        url: service.host,
+        data: {
+          'serverId': {
+            'method': 'getEntranceGuards'
+          },
+          'param': {
+            'name': userName
+          }
+        }
+      }, {
+        success: (result) => {
+          console.log('handel temp keys: ', result)
+          if (result.msgcode == 0) {
+            that.tempKeys = result.response.entranceGuards
+          }
+        },
+        fail: ({code, data}) => {},
+        complete: () => { this.loaded = false }
+      })
     }
 
     onPullDownRefresh() {
@@ -56,14 +92,39 @@
 
     // 初始化页面数据
     initPageData() {
+      this.getTempKeys()
+    }
+
+    oneKeyOpenDoor(item) {
+      let that = this
+      let userName = wx.getStorageSync('userName')
+      that.$post({
+        url: service.host,
+        data: {
+          'serverId': {
+            'method': 'getEntranceGuards'
+          },
+          'param': {
+            'username': userName,
+            'entranceGuardCode': item.code
+          }
+        }
+      }, {
+        success: (result) => {
+          console.log('handel one key open door: ', result)
+          if (result.msgcode == 0) {
+            that.$showToast('开门指令已发送', 'success')
+          }
+        },
+        fail: ({code, data}) => {},
+        complete: () => { this.loaded = false }
+      })
     }
 
     methods = {
-      goto(url) {
-        wx.navigateTo({url: url})
-      },
-      openDoor() {
-
+      openDoor(item) {
+        console.log('will open door: ', item)
+        this.oneKeyOpenDoor(item)
       }
     }
 

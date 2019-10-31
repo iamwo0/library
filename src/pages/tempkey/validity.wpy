@@ -7,8 +7,8 @@
                 <view class="weui-label">日期</view>
             </view>
             <view class="weui-cell__bd">
-                <picker mode="date" value="{{date}}" start="2015-09-01" end="2017-09-01" bindchange="bindDateChange">
-                    <view class="weui-input">{{date}}</view>
+                <picker mode="date" value="{{ startDate }}" start="2019-09-01" end="2110-09-01" bindchange="bindStartDateChange">
+                    <view class="weui-input">{{ startDate }}</view>
                 </picker>
             </view>
         </view>
@@ -17,8 +17,8 @@
                 <view class="weui-label">时间</view>
             </view>
             <view class="weui-cell__bd">
-                <picker mode="time" value="{{time}}" start="09:01" end="21:01" bindchange="bindTimeChange">
-                    <view class="weui-input">{{time}}</view>
+                <picker mode="time" value="{{ startTime }}" start="00:00" end="23:59" bindchange="bindStartTimeChange">
+                    <view class="weui-input">{{ startTime }}</view>
                 </picker>
             </view>
         </view>
@@ -30,8 +30,8 @@
                 <view class="weui-label">日期</view>
             </view>
             <view class="weui-cell__bd">
-                <picker mode="date" value="{{date}}" start="2015-09-01" end="2017-09-01" bindchange="bindDateChange">
-                    <view class="weui-input">{{date}}</view>
+                <picker mode="date" value="{{ endData }}" start="2019-09-01" end="2110-12-31" bindchange="bindEndDateChange">
+                    <view class="weui-input">{{ endData }}</view>
                 </picker>
             </view>
         </view>
@@ -40,20 +40,24 @@
                 <view class="weui-label">时间</view>
             </view>
             <view class="weui-cell__bd">
-                <picker mode="time" value="{{time}}" start="09:01" end="21:01" bindchange="bindTimeChange">
-                    <view class="weui-input">{{time}}</view>
+                <picker mode="time" value="{{ endTime }}" start="09:01" end="21:01" bindchange="bindEndTimeChange">
+                    <view class="weui-input">{{ endTime }}</view>
                 </picker>
             </view>
         </view>
     </view>
-    <button class="weui-btn" type="primary" @tap="goto('show')">生成秘钥</button>
+    <button class="weui-btn" type="primary" @tap="saveTempKey">生成秘钥</button>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
+  import { service } from '../../config.js'
+  import base from '../../mixins/base'
+  import http from '../../mixins/http'
 
   export default class pageValidity extends wepy.page {
+    mixins = [base, http]
     config = {
       navigationBarTitleText: '秘钥时效',
       enablePullDownRefresh: true,
@@ -65,8 +69,10 @@
 
     data = {
       icon: 'http://119.3.220.213/images/zhsq/icons/keys.png',
-      date: '2016-09-01',
-      time: '12:01'
+      startDate: '2019-09-01',
+      startTime: '12:01',
+      endData: '2019-12-01',
+      endTime: '23:59'
     }
 
     computed = {
@@ -88,18 +94,48 @@
     }
 
     methods = {
-      goto(url) {
-        wx.navigateTo({url: url})
-      },
-      bindDateChange: function (e) {
-        this.setData({
-          date: e.detail.value
+      saveTempKey() {
+        let that = this
+        let activeTempKey = wx.getStorageSync('activeTempKey')
+        let userName = wx.getStorageSync('userName')
+        that.$post({
+          url: service.host,
+          data: {
+            'serverId': {
+              'method': 'getTempPwd'
+            },
+            'param': {
+              'username': userName,
+              'entranceGuardCode': activeTempKey.code,
+              'validStartDate': that.startDate,
+              'validStartTime': that.startTime,
+              'validEndDate': that.endData,
+              'validEndTime': that.endTime
+            }
+          }
+        }, {
+          success: (result) => {
+            console.log('handel temp keys: ', result)
+            if (result.msgcode == 0) {
+              console.log('set temp key success: ', result)
+              wx.navigateTo({url: 'show'})
+            }
+          },
+          fail: ({code, data}) => {},
+          complete: () => { this.loaded = false }
         })
       },
-      bindTimeChange: function (e) {
-        this.setData({
-          time: e.detail.value
-        })
+      bindStartDateChange: function (e) {
+        this.startDate = e.detail.value
+      },
+      bindStartTimeChange: function (e) {
+        this.startTime = e.detail.value
+      },
+      bindEndDateChange: function (e) {
+        this.endData = e.detail.value
+      },
+      bindEndTimeChange: function (e) {
+        this.endTime = e.detail.value
       }
     }
 

@@ -18,7 +18,7 @@
               </navigator>
           </view>
           <view class="weui-panel__bd">
-            <view class="weui-media-box weui-media-box_text"  wx:for="{{communityNotices}}" wx:key="*this">
+            <view class="weui-media-box weui-media-box_text" wx:for="{{communityNotices}}" wx:key="*this">
               <view class="weui-media-box__title weui-media-box__title_in-text">{{ item.title }}</view>
               <view class="weui-media-box__desc">{{item.content}}</view>
               <view class="weui-media-box__info">
@@ -98,6 +98,30 @@
             'name': userName,
             'page': that.page,
             'pageSize': that.pageSize
+          }
+        }
+      }, {
+        success: (result) => {
+          if (result.msgcode == 0) {
+            console.log('get community notices: ', result.response)
+            that.communityNotices = result.response.communityNotices
+          }
+        },
+        fail: ({code, data}) => {},
+        complete: () => { this.loaded = false }
+      })
+    }
+    getHouseProperty() {
+      let that = this
+      let userName = wx.getStorageSync('userName')
+      that.$post({
+        url: service.host,
+        data: {
+          'serverId': {
+            'method': 'getHouseProperty'
+          },
+          'param': {
+            'name': userName
           }
         }
       }, {

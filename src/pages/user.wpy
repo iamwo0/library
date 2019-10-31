@@ -61,7 +61,7 @@
             type: 'nav'
           },
           {
-            icon: 'http://119.3.220.213/images/zhsq/icons/question-mark.png',
+            icon: 'http://119.3.220.213/images/zhsq/icons/prepare-report.png',
             title: '房屋报修',
             link: '/pages/house/maintenance',
             type: 'nav'
@@ -83,7 +83,7 @@
         // 业主
         menus = [
           {
-            icon: 'http://119.3.220.213/images/zhsq/icons/question-mark.png',
+            icon: 'http://119.3.220.213/images/zhsq/icons/prepare-report.png',
             title: '房屋报修',
             link: '/pages/house/maintenance',
             type: 'nav'
@@ -107,7 +107,7 @@
             type: 'nav'
           },
           {
-            icon: 'http://119.3.220.213/images/zhsq/icons/prepare-report.png',
+            icon: 'http://119.3.220.213/images/zhsq/icons/users.png',
             title: '我的成员',
             link: '/pages/member/list',
             type: 'nav'
@@ -117,7 +117,7 @@
         // 物业人员
         menus = [
           {
-            icon: 'http://119.3.220.213/images/zhsq/icons/question-mark.png',
+            icon: 'http://119.3.220.213/images/zhsq/icons/prepare-report.png',
             title: '房屋报修',
             link: '/pages/house/maintenance',
             type: 'nav'
