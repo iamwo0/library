@@ -97,9 +97,10 @@
               // 注册验证手机号码成功
               that.$showToast('验证通过', 'success')
               wx.setStorageSync('managerMobile', that.managerMobile)
-              wx.removeStorageSync('faceImage')
-              wx.removeStorageSync('idCardBack')
-              wx.removeStorageSync('idCardFront')
+              // @TODO remove before publish
+              // wx.removeStorageSync('faceImage')
+              // wx.removeStorageSync('idCardBack')
+              // wx.removeStorageSync('idCardFront')
               wx.navigateTo({url: 'step3'})
             }
           },

@@ -9,7 +9,7 @@
     <view class="sign-form">
       <form bindsubmit="formSubmit" bindreset="formReset">
         <view class="section">
-          <input name="input" type="number" maxlength="11" placeholder="请输入用户名" value="{{loginUsername}}" focus="{{focusInputUser}}" @input="loginUsernameInput"/>
+          <input name="input" type="text" maxlength="11" placeholder="请输入用户名" value="{{loginUsername}}" focus="{{focusInputUser}}" @input="loginUsernameInput"/>
         </view>
         <view class="section">
           <input name="input" type="password" placeholder="请输入密码" value="{{loginPwd}}" focus="{{focusInputPwd}}" @input="loginPwdInput"/>
@@ -97,17 +97,20 @@
               'method': 'login'
             },
             'param': {
-              'name': that.loginUsername,
-              'mobile': that.loginPwd
+              'username': that.loginUsername,
+              'pwd': that.loginPwd
             }
           }
         }, {
-          success: (response) => {
-            console.log('handel login response: ', response)
-            if (response.msgcode == 0) {
-              // 注册验证手机号码成功
+          success: (result) => {
+            console.log('handel login response: ', result)
+            if (result.msgcode == 0) {
+              // 登录成功
               that.$showToast('登录成功', 'success')
               try {
+                wx.setStorageSync('token', result.reponse)
+                wx.setStorageSync('role', result.reponse.role)
+                wx.setStorageSync('userName', that.loginUsername)
               } catch (e) {
                 console.error(e)
               }

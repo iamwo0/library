@@ -11,7 +11,7 @@
         <div class="weui-cell">
             <div class="weui-cell__hd"><label class="weui-label"></label></div>
             <div class="weui-cell__bd">
-                <input class="weui-input" type="text" placeholder="请输入您的姓名" value="{{registerName}}" focus="{{focusInputRegisterName}}"  @input="registerNameInput"/>
+                <input class="weui-input" type="text" placeholder="请输入您的姓名" value="{{registerNickname}}" focus="{{focusInputregisterNickname}}"  @input="registerNicknameInput"/>
             </div>
         </div>
         <div class="weui-cell">
@@ -61,9 +61,9 @@
     }
 
     data = {
-      registerName: '萧蔷',
+      registerNickname: '萧蔷',
       registerMobile: '13788888888',
-      focusInputRegisterName: false,
+      focusInputregisterNickname: false,
       focusInputRegisterMobile: false
     }
 
@@ -94,9 +94,9 @@
     }
 
     methods = {
-      registerNameInput(e) {
+      registerNicknameInput(e) {
         console.log('handle input register user nickname: ', e.detail.value)
-        this.registerName = e.detail.value
+        this.registerNickname = e.detail.value
       },
 
       registerMobileInput(e) {
@@ -106,8 +106,8 @@
 
       mobileCheck() {
         let that = this
-        if (!that.registerName) {
-          that.focusInputRegisterName = true
+        if (!that.registerNickname) {
+          that.focusInputregisterNickname = true
           return false
         }
         if (!that.registerMobile) {
@@ -121,7 +121,7 @@
               'method': 'validateMobile'
             },
             'param': {
-              'name': that.registerName,
+              'name': that.registerNickname,
               'mobile': that.registerMobile
             }
           }
@@ -132,7 +132,7 @@
               // 注册验证手机号码成功
               that.$showToast('验证通过', 'success')
               try {
-                wx.setStorageSync('userName', that.registerName)
+                wx.setStorageSync('userNickname', that.registerNickname)
                 wx.setStorageSync('userMobile', that.registerMobile)
               } catch (e) {
                 console.error(e)

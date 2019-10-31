@@ -93,6 +93,7 @@ export default class httpMixin extends wepy.mixin {
             this.$apply()
           })
         } else if (data.flag == 1) {
+          console.warn(data, 'with request: ', request)
           wx.hideLoading()
           wx.showModal({
             title: '提示',

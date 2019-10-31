@@ -84,7 +84,7 @@
             'method': 'getDoorRecords'
           },
           'param': {
-            'name': userName,
+            'username': userName,
             'page': that.page,
             'pageSize': that.pageSize
           }

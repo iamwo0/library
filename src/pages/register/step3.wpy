@@ -7,7 +7,7 @@
                     <view class="weui-label">姓名: </view>
                 </view>
                 <view class="weui-cell__bd">
-                    <input class="weui-input" placeholder="请输入姓名" value="{{ registerUsername }}" focus="{{ focusRegisterUsername }}"  @input="registerUsernameInput"/>
+                    <input class="weui-input" placeholder="请输入姓名" value="{{ registerNickname }}" focus="{{ focusRegisterNickname }}"  @input="registerNicknameInput"/>
                 </view>
             </view>
             <view class="weui-cell ">
@@ -205,17 +205,17 @@
       rooms: [],
       roomIndex: null,
       activeBuilding: null,
-      registerUsername: '',
-      focusRegisterUsername: false,
-      registerUserIdCard: '',
+      registerNickname: '',
+      focusRegisterNickname: false,
+      registerUserIdCard: '110020',
       focusRegisterUserIdCard: false,
-      registerUserPwd: '',
+      registerUserPwd: '123123',
       focusRegisterUserPwd: false,
-      registerUserPwdConfirm: '',
+      registerUserPwdConfirm: '123123',
       focusRegisterUserPwdConfirm: false,
-      registerUserEmail: '',
+      registerUserEmail: 'qq@qq.com',
       focusRegisterUserEmail: false,
-      registerUserCompany: '',
+      registerUserCompany: 'Tencent',
       focusRegisterUserCompany: false,
       registerGender: false,  // false: male, true: female
       faceImage: '',
@@ -229,15 +229,26 @@
 
     onShow() {
       // 初始化页面数据
-      this.faceImage = wx.getStorageSync('faceImage')
-      this.idCardBack = wx.getStorageSync('idCardBack')
-      this.idCardFront = wx.getStorageSync('idCardFront')
+      this.showImages()
     }
 
     onHide() {
-      this.faceImage = wx.getStorageSync('faceImage')
-      this.idCardBack = wx.getStorageSync('idCardBack')
-      this.idCardFront = wx.getStorageSync('idCardFront')
+      this.showImages()
+    }
+
+    showImages() {
+      let storeFaceImage = wx.getStorageSync('faceImage')
+      if (!this.faceImage && storeFaceImage) {
+        this.faceImage = storeFaceImage
+      }
+      let storeFrontIdCard = wx.getStorageSync('idCardFront')
+      if (!this.idCardFront && storeFrontIdCard) {
+        this.idCardFront = storeFrontIdCard
+      }
+      let storeBackIdCard = wx.getStorageSync('idCardBack')
+      if (!this.idCardBack && storeBackIdCard) {
+        this.idCardBack = storeBackIdCard
+      }
     }
 
     onShareAppMessage(res) {
@@ -251,9 +262,10 @@
     // 初始化页面数据
     initPageData() {
       let that = this
-      let userName = wx.getStorageSync('userName')
+      let userNickname = wx.getStorageSync('userNickname')
       let userMobile = wx.getStorageSync('userMobile')
       that.userMobile = userMobile
+      that.registerNickname = userNickname
       that.$post({
         url: service.host,
         data: {
@@ -261,14 +273,14 @@
             'method': 'getBuildings'
           },
           'param': {
-            'name': userName,
+            'name': userNickname,
             'mobile': userMobile
           }
         }
       }, {
         success: (result) => {
           if (result.msgcode == 0) {
-            console.log('XXXXXXX', result.response)
+            console.log('get buildings: ', result.response)
             that.buildings = result.response.buildings
           }
         },
@@ -278,17 +290,14 @@
     }
 
     methods = {
-      goto(url) {
-        wx.navigateTo({url: url})
-      },
 
       showRooms(rooms) {
         this.rooms = rooms
       },
 
-      registerUsernameInput(e) {
+      registerNicknameInput(e) {
         console.log('handle input register name: ', e.detail.value)
-        this.registerUsername = e.detail.value
+        this.registerNickname = e.detail.value
       },
 
       registerUserIdCardInput(e) {
@@ -409,8 +418,8 @@
       },
       submitForm() {
         let that = this
-        if (!that.registerUsername) {
-          that.focusRegisterUsername = true
+        if (!that.registerNickname) {
+          that.focusRegisterNickname = true
           return false
         }
         if (!that.registerUserIdCard) {
@@ -434,11 +443,11 @@
           return false
         }
         let params = {
-          'username': '',  // ????
-          'type': 4,
-          'name': that.registerUsername, // ????
-          'appUsername': that.registerUsername, // ????
-          'appPwd': that.registerUserPwd,
+          'username': '',  // 注册完善信息时为空
+          'type': 4, // 这里注册认证的为业主
+          'name': that.registerNickname, // 用户姓名,可以理解为昵称
+          // 'appUsername': that.registerNickname, // 添加业主账号时特有
+          'appPwd': that.registerUserPwd,  // 添加业主账号时默认密码为此值
           'idCard': that.registerUserIdCard,
           'mobile': that.userMobile,
           'buildingId': that.activeBuilding.id,
@@ -464,7 +473,8 @@
           success: (response) => {
             console.log('handel register save info: ', response)
             if (response.msgcode == 0) {
-              that.goto('/pages/user/login')
+              that.showToast('账号注册成功', 'success')
+              wx.navigateTo({url: '/pages/user/login'})
             }
           },
           fail: ({code, data}) => {},

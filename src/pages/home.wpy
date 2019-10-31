@@ -100,7 +100,7 @@
             'method': 'getCommunityNotices'
           },
           'param': {
-            'name': userName,
+            'username': userName,
             'page': that.page,
             'pageSize': that.pageSize
           }
@@ -126,7 +126,7 @@
             'method': 'getHouseProperty'
           },
           'param': {
-            'name': userName
+            'username': userName
           }
         }
       }, {
@@ -155,6 +155,7 @@
     }
     initPageData() {
       this.getCommunityNotices()
+      this.getHouseProperty()
     }
     methods = {
       goto(url, type) {

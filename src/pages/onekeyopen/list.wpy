@@ -71,7 +71,7 @@
             'method': 'getEntranceGuards'
           },
           'param': {
-            'name': userName
+            'username': userName
           }
         }
       }, {

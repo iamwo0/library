@@ -61,7 +61,7 @@
             'method': 'getAdvertisements'
           },
           'param': {
-            'name': userName
+            'username': userName
           }
         }
       }, {
