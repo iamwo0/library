@@ -1,0 +1,194 @@
+<template>
+  <view class="page-house">
+    <view class="maintenance-form">
+      <div class="weui-cells weui-cells_form">
+        <view class="weui-cells weui-cells_after-title">
+            <view class="weui-cell">
+                <view class="weui-cell__bd">
+                    <textarea class="weui-textarea" placeholder="请输入房屋问题" style="height: 3.3em" value="{{ content }}" focus="{{ focusContent }}" @input="contentInput"/>
+                    <view class="weui-textarea-counter">0/200</view>
+                </view>
+            </view>
+        </view>
+        <view class="weui-cell">
+            <view class="weui-cell__bd">
+                <view class="weui-uploader">
+                  
+                    <view class="weui-uploader__hd">
+                      <view class="weui-uploader__overview">
+                          <view class="weui-uploader__title">选择上传问题图片(最多3张): </view>
+                      </view>
+                    </view>
+                    <view class="weui-uploader__bd">
+                        <view class="weui-uploader__files" wx:for="{{ images }}" wx:key="*this">
+                            <block>
+                                <view class="weui-uploader__file" @tap="previewImage" id="{{ item }}">
+                                    <image class="weui-uploader__img" src="{{ item }}" mode="aspectFill" />
+                                </view>
+                            </block>
+                        </view>
+                        <view class="weui-uploader__input-box">
+                            <view class="weui-uploader__input" @tap="choose"></view>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </view>
+        <div class="weui-cell">
+            <view class="page__bd page__bd_spacing">
+              <button class="weui-btn" type="primary" @tap="submitRepairForm">提 交</button>
+            </view>
+        </div>
+      </div>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import { service } from '../../config.js'
+  import base from '../../mixins/base'
+  import http from '../../mixins/http'
+  const uploadImage = require('../../utils/uploadFile.js')
+  const util = require('../../utils/util.js')
+
+  export default class pageMaintenanceAdd extends wepy.page {
+    mixins = [base, http]
+    config = {
+      navigationBarTitleText: '房屋报修',
+      enablePullDownRefresh: true,
+      navigationBarBackgroundColor: '#005b9e'
+    }
+
+    components = {
+    }
+
+    data = {
+      content: '',
+      focusContent: false,
+      images: []
+    }
+
+    computed = {
+    }
+
+    onShow() {
+      // 初始化页面数据
+      this.getUploadedImages()
+    }
+    onHide() {
+      this.getUploadedImages()
+    }
+    onLoad() {
+    }
+
+    getUploadedImages() {
+      let storeImages = wx.getStorageSync('repairImages') || []
+      this.images = storeImages
+    }
+
+    onPullDownRefresh() {
+      this.initPageData()
+    }
+
+    // 初始化页面数据
+    initPageData() {
+    }
+
+    methods = {
+      contentInput(e) {
+        console.log('handle content input : ', e.detail.value)
+        this.content = e.detail.value
+      },
+      choose(imageType) {
+        let that = this
+        wx.chooseImage({
+          count: 3, // 这里默认选择一张, 最多可以选择3张
+          sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+          sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+          success: function (res) {
+            var nowTime = util.formatTime(new Date())
+            // 支持多图上传
+            for (var i = 0; i < res.tempFilePaths.length; i++) {
+              // 显示消息提示框
+              wx.showLoading({
+                title: '上传中' + (i + 1) + '/' + res.tempFilePaths.length,
+                mask: true
+              })
+              uploadImage(res.tempFilePaths[i], 'fm/' + nowTime + '/',
+                  function (result) {
+                    console.log('======上传成功图片地址为：', result)
+                    wx.hideLoading()
+                    let storeImages = wx.getStorageSync('repairImages') || []
+                    storeImages.push(result)
+                    that.images = storeImages
+                    wx.setStorageSync('repairImages', storeImages)
+                  }, function (err) {
+                    console.log('======上传失败======', err)
+                    wx.hideLoading()
+                  }
+              )
+            }
+          }
+        })
+      },
+      previewImage(e) {
+        wx.previewImage({
+          current: e.currentTarget.id, // 当前显示图片的http链接
+          urls: [e.currentTarget.id] // 需要预览的图片http链接列表
+        })
+      },
+      submitRepairForm() {
+        let that = this
+        if (!that.content) {
+          that.focusContent = true
+          return false
+        }
+        let userName = wx.getStorageSync('userName')
+        that.$post({
+          url: service.host,
+          data: {
+            'serverId': {
+              'method': 'reportHousingRepair'
+            },
+            'param': {
+              'username': userName,
+              'content': that.content,
+              'img': (that.images[0] || ''),
+              'img2': (that.images[1] || ''),
+              'img3': (that.images[2] || '')
+            }
+          }
+        }, {
+          success: (response) => {
+            console.log('handel report houase repair result: ', response)
+            if (response.msgcode == 0) {
+              that.$showToast('报修信息已提交', 'success')
+              wx.removeStorageSync('repairImages')
+              wx.navigateTo({url: 'list'})
+            }
+          },
+          fail: ({code, data}) => {},
+          complete: () => { this.loaded = false }
+        })
+      }
+    }
+
+    components = {
+    }
+  }
+</script>
+
+<style lang="less">
+
+  page{
+    background: #f9f9f9;
+  }
+  .page-house{
+    @userinfoHeight: 100rpx;
+    @userinfoSpace: 8rpx;
+    .maintenance-form {
+      margin-top: 80rpx;
+    }
+  }
+</style>

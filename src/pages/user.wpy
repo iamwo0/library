@@ -106,7 +106,7 @@
           {
             icon: 'http://119.3.220.213/images/zhsq/icons/prepare-report.png',
             title: '房屋报修',
-            link: '/pages/house/maintenance',
+            link: '/pages/house/list',
             type: 'nav'
           },
           {

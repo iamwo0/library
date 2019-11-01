@@ -1,0 +1,116 @@
+<template>
+  <view class="page-house">
+    <view class="weui-panel__bd">
+      <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active" wx:for="{{ maintenances }}" wx:key="*this">
+        <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+          <image class="weui-media-box__thumb" src="{{ item.img }}" />
+        </view>
+        <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+          <view class="weui-media-box__title">{{ item.createDate }}</view>
+          <view class="weui-media-box__desc">{{ item.content }}</view>
+        </view>
+      </navigator>
+    </view>
+    <view class="weui-footer" wx:if="{{ !maintenances.length }}">
+      <view class="weui-footer__text">暂无房屋报修记录</view>
+    </view>
+    <view class="weui-panel__bd">
+      <view class="weui-btn-area">
+        <button class="weui-btn" type="primary" @tap="goto('add')">上报维修</button>
+      </view>
+    </view>
+
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import { service } from '../../config.js'
+  import base from '../../mixins/base'
+  import http from '../../mixins/http'
+
+  export default class pageMaintenanceList extends wepy.page {
+    mixins = [base, http]
+    config = {
+      navigationBarTitleText: '我的报修',
+      enablePullDownRefresh: true,
+      navigationBarBackgroundColor: '#005b9e'
+    }
+
+    components = {
+    }
+
+    data = {
+      maintenances: [],
+      page: 1,
+      pageSize: 10
+    }
+
+    computed = {
+    }
+
+    onShow() {
+      // 初始化页面数据
+    }
+
+    onLoad() {
+      this.initPageData()
+    }
+
+    getMaintenances() {
+      let that = this
+      let userName = wx.getStorageSync('userName')
+      that.$post({
+        url: service.host,
+        data: {
+          'serverId': {
+            'method': 'getHousingRepairs'
+          },
+          'param': {
+            'username': userName,
+            'page': that.page,
+            'pageSize': that.pageSize
+          }
+        }
+      }, {
+        success: (result) => {
+          console.log('handel house maintenances: ', result)
+          if (result.msgcode == 0) {
+            that.maintenances = result.response.housingRepairs
+          }
+        },
+        fail: ({code, data}) => {},
+        complete: () => { this.loaded = false }
+      })
+    }
+
+    onPullDownRefresh() {
+      this.initPageData()
+    }
+
+    // 初始化页面数据
+    initPageData() {
+      this.getMaintenances()
+    }
+
+    methods = {
+    }
+
+    components = {
+    }
+  }
+</script>
+
+<style lang="less">
+
+  page{
+    background: #f9f9f9;
+  }
+  .page-house{
+    @userinfoHeight: 100rpx;
+    @userinfoSpace: 8rpx;
+    .maintenance-form {
+      margin-top: 80rpx;
+    }
+  }
+</style>

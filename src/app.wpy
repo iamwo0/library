@@ -69,7 +69,8 @@
         {
           'root': 'pages/house',
           'pages': [
-            'maintenance'
+            'add',
+            'list'
           ]
         },
         {

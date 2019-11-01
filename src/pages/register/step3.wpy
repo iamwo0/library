@@ -408,8 +408,8 @@
                       console.error(e)
                     }
                     wx.hideLoading()
-                  }, function (result) {
-                    console.log('======上传失败======', result)
+                  }, function (err) {
+                    console.log('======上传失败======', err)
                     wx.hideLoading()
                   }
               )
@@ -475,6 +475,9 @@
             console.log('handel register save info: ', response)
             if (response.msgcode == 0) {
               that.$showToast('账号注册成功', 'success')
+              wx.removeStorageSync('faceImage')
+              wx.removeStorageSync('idCardBack')
+              wx.removeStorageSync('idCardFront')
               wx.navigateTo({url: '/pages/user/login'})
             }
           },
