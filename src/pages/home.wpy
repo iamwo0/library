@@ -87,6 +87,18 @@
     onShow() {
     }
     onLoad() {
+      let that = this
+      var authed = wx.getStorageSync('token')
+      if (!authed) {
+        that.$showToast('请先登录', 'loading', 1200, function() {
+          wx.navigateTo({url: '/pages/user/login'})
+        })
+      } else {
+        this.initMenu()
+        that.initPageData()
+      }
+    }
+    onPullDownRefresh() {
       this.initMenu()
       this.initPageData()
     }

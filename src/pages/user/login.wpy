@@ -108,12 +108,13 @@
               // 登录成功
               that.$showToast('登录成功', 'success')
               try {
-                wx.setStorageSync('token', result.reponse)
-                wx.setStorageSync('role', result.reponse.role)
+                wx.setStorageSync('token', result.response)
+                wx.setStorageSync('role', result.response.role)
                 wx.setStorageSync('userName', that.loginUsername)
               } catch (e) {
                 console.error(e)
               }
+              wx.switchTab({url: '/pages/home'})
             }
           },
           fail: ({code, data}) => {},
