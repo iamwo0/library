@@ -1,0 +1,126 @@
+<template>
+  <view class="page__bd">
+    <view class="page__bd">
+      <view class="weui-article">
+        <view class="weui-article__section">
+          <view class="weui-article__section">
+            <view class="weui-article__p">
+                {{currentReport.content}}
+            </view>
+            <view class="weui-article__p">
+              <view class="weui-flex">
+                <view class="weui-flex__item">
+                  <block wx:for="{{ grids }}" wx:key="*this">
+                    <view class="placeholder" @tap="previewImage" id="{{item}}">
+                      <image class="weui-article__img" src="{{ item }}" mode="aspectFit" style="height: 60px; max-width: 100%" />
+                    </view>
+                  </block>
+                </view>
+              </view>
+            </view>
+          </view>
+          <view class="weui-article__section">
+            <view class="weui-media-box__info">
+              <view class="weui-media-box__info__meta">{{ currentReport.reporterName }}</view>
+              <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{currentReport.createDate}}</view>
+              <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{ reportStatus }}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class pageMaintenanceShow extends wepy.page {
+    config = {
+      navigationBarTitleText: '报修详情',
+      enablePullownRefresh: true,
+      navigationBarBackgroundColor: '#005b9e'
+    }
+    components = {
+    }
+
+    data = {
+      currentReport: null,
+      grids: [],
+      reportStatus: ''
+    }
+
+    computed = {
+    }
+
+    onShow() {
+
+    }
+
+    onHide() {
+
+    }
+    onLoad() {
+      this.initPageData()
+    }
+
+    onPullDownRefresh() {
+      this.initPageData()
+    }
+
+    // 初始化页面数据
+    initPageData() {
+      let report = wx.getStorageSync('activeReport') || null
+      if (report) {
+        this.currentReport = report
+        if (report.img) {
+          this.grids.push(report.img)
+        }
+        if (report.img2) {
+          this.grids.push(report.img2)
+        }
+        if (report.img3) {
+          this.grids.push(report.img3)
+        }
+        if (report.status > 1) {
+          this.reportStatus = '处理完毕'
+        } else if (report.status > 0) {
+          this.reportStatus = '处理中'
+        } else {
+          this.reportStatus = '未处理'
+        }
+      }
+    }
+
+    methods = {
+      previewImage(e) {
+        wx.previewImage({
+          current: e.currentTarget.id, // 当前显示图片的http链接
+          urls: [e.currentTarget.id] // 需要预览的图片http链接列表
+        })
+      }
+
+    }
+
+    components = {
+    }
+  }
+</script>
+
+<style lang="less">
+
+  page{
+    background: #f9f9f9;
+  }
+  .page-house{
+    @userinfoHeight: 100rpx;
+    @userinfoSpace: 8rpx;
+    .maintenance-form {
+      margin-top: 80rpx;
+    }
+  }
+  .placeholder {
+    width: 33.3%;
+    float: left;
+  }
+</style>

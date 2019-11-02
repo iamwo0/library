@@ -70,7 +70,8 @@
           'root': 'pages/house',
           'pages': [
             'add',
-            'list'
+            'list',
+            'show'
           ]
         },
         {

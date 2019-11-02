@@ -13,7 +13,6 @@
         <view class="weui-cell">
             <view class="weui-cell__bd">
                 <view class="weui-uploader">
-                  
                     <view class="weui-uploader__hd">
                       <view class="weui-uploader__overview">
                           <view class="weui-uploader__title">选择上传问题图片(最多3张): </view>

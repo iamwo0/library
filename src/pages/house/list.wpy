@@ -1,7 +1,7 @@
 <template>
   <view class="page-house">
     <view class="weui-panel__bd">
-      <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active" wx:for="{{ maintenances }}" wx:key="*this">
+      <view class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active" wx:for="{{ maintenances }}" wx:key="*this" @tap="showDetail({{ item }})">
         <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
           <image class="weui-media-box__thumb" src="{{ item.img }}" />
         </view>
@@ -9,7 +9,7 @@
           <view class="weui-media-box__title">{{ item.createDate }}</view>
           <view class="weui-media-box__desc">{{ item.content }}</view>
         </view>
-      </navigator>
+      </view>
     </view>
     <view class="weui-footer" wx:if="{{ !maintenances.length }}">
       <view class="weui-footer__text">暂无房屋报修记录</view>
@@ -94,6 +94,11 @@
     }
 
     methods = {
+      showDetail(item) {
+        console.log('will show report detail: ', item)
+        wx.setStorageSync('activeReport', item)
+        wx.navigateTo({url: 'show'})
+      }
     }
 
     components = {
